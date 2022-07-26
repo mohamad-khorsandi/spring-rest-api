@@ -1,4 +1,4 @@
-package ir.sobhan.model.entity;
+package ir.sobhan.model.entity.peopleEntities;
 
 import lombok.*;
 
@@ -11,14 +11,14 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentInf {
+public class StudentInf{
     @Id @GeneratedValue @Column(nullable = false)
     @Setter(value = AccessLevel.PRIVATE)
     private Long id;
 
     String studentId;
 
-    @Enumerated(EnumType.STRING)//todo: what kind of thing need relation annotation?
+    @Enumerated(EnumType.STRING)
     Degree degree;
 
     public enum Degree{

@@ -1,10 +1,11 @@
-package ir.sobhan.model.input;
+package ir.sobhan.model.input.peopleEntities;
 
-import ir.sobhan.model.entity.User;
+import ir.sobhan.model.entity.peopleEntities.User;
+import ir.sobhan.model.input.InputDTO;
 import lombok.Setter;
 
 @Setter
-public class InstructorInputDTO extends InputDTO<User>{
+public class InstructorInputDTO extends InputDTO<User> {
     public InstructorInputDTO() {
         super(User.class);
     }

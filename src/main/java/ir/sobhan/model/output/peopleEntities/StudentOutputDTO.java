@@ -1,10 +1,11 @@
-package ir.sobhan.model.output;
-import ir.sobhan.model.entity.User;
+package ir.sobhan.model.output.peopleEntities;
+
+import ir.sobhan.model.entity.peopleEntities.User;
+import ir.sobhan.model.output.OutPutDTO;
 import lombok.Getter;
-import org.springframework.hateoas.EntityModel;
 
 @Getter
-public class StudentOutputDTO extends OutPutDTO<User>{
+public class StudentOutputDTO extends OutPutDTO<User> {
     public StudentOutputDTO(User realObj) throws Exception {
         super(realObj);
     }

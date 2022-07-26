@@ -14,6 +14,9 @@ abstract public class OutPutDTO <R_CLASS> {
 
             Object realValue = realField.get(realObj);
 
+            if (realValue == null)
+                continue;
+
             if (OutPutDTO.class.isAssignableFrom(outField.getType())) {
                 Constructor constructor = outField.getType().getConstructor(realField.getType());
                 OutPutDTO outValueDTO =  (OutPutDTO) constructor.newInstance(realValue);
@@ -27,4 +30,5 @@ abstract public class OutPutDTO <R_CLASS> {
     public EntityModel<? extends OutPutDTO> toModel() {
         return EntityModel.of(this.getClass().cast(this));
     }
+
 }

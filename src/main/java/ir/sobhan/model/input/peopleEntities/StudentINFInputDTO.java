@@ -1,6 +1,7 @@
-package ir.sobhan.model.input;
+package ir.sobhan.model.input.peopleEntities;
 
-import ir.sobhan.model.entity.StudentInf;
+import ir.sobhan.model.entity.peopleEntities.StudentInf;
+import ir.sobhan.model.input.InputDTO;
 import lombok.Setter;
 
 @Setter

@@ -1,4 +1,4 @@
-package ir.sobhan.model.entity;
+package ir.sobhan.model.entity.peopleEntities;
 
 import lombok.*;
 import javax.persistence.Entity;
@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User{
     @Id @GeneratedValue @Column(nullable = false)
     @Setter(value = AccessLevel.PRIVATE)
     private Long id;

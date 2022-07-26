@@ -8,7 +8,11 @@ abstract public class InputDTO<R_CLASS>{
     }
     private Class<R_CLASS> realClassType;
 
-    public R_CLASS toRealObj(R_CLASS realObj) throws IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+    /**
+     * @param realObj null -> to make new instance and init with dto
+     *                obj ->  to change given instance fields with not null fields of dto
+     */
+    public R_CLASS toRealObj(R_CLASS realObj) throws Exception {
         if (realObj == null)
             realObj = realClassType.getConstructor().newInstance();
 

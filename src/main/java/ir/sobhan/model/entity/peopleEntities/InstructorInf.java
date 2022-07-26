@@ -1,4 +1,4 @@
-package ir.sobhan.model.entity;
+package ir.sobhan.model.entity.peopleEntities;
 
 import lombok.*;
 
@@ -13,6 +13,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 public class InstructorInf {
     @Id @GeneratedValue @Column(nullable = false)
+    @Setter(value = AccessLevel.PRIVATE)
     private Long id;
     private Rank rank;
     public enum Rank{

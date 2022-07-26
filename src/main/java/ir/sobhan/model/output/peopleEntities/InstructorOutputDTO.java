@@ -1,7 +1,9 @@
-package ir.sobhan.model.output;
-import ir.sobhan.model.entity.User;
+package ir.sobhan.model.output.peopleEntities;
 
-public class InstructorOutputDTO extends OutPutDTO<User>{
+import ir.sobhan.model.entity.peopleEntities.User;
+import ir.sobhan.model.output.OutPutDTO;
+
+public class InstructorOutputDTO extends OutPutDTO<User> {
     public InstructorOutputDTO(User realObj) throws Exception {
         super(realObj);
     }
