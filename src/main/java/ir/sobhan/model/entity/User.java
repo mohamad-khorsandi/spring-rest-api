@@ -31,8 +31,8 @@ public class User {
     private String name;
     private String phone;
     private String nationalId;
-    boolean isStudent;
-    boolean isInstructor;
+    private boolean isStudent;
+    private boolean isInstructor;
 
     @Setter(value = AccessLevel.PRIVATE)
     private boolean isActive;
