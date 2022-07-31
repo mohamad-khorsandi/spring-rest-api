@@ -1,10 +1,10 @@
 package ir.sobhan.model.output.peopleEntities;
 
-import ir.sobhan.model.entity.peopleEntities.User;
+import ir.sobhan.model.entity.peopleEntities.AppUser;
 import ir.sobhan.model.output.OutPutDTO;
 
-public class InstructorOutputDTO extends OutPutDTO<User> {
-    public InstructorOutputDTO(User realObj) throws Exception {
+public class InstructorOutputDTO extends OutPutDTO<AppUser> {
+    public InstructorOutputDTO(AppUser realObj) throws Exception {
         super(realObj);
     }
     public Long id;

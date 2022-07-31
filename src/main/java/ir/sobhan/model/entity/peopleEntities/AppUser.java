@@ -1,8 +1,13 @@
 package ir.sobhan.model.entity.peopleEntities;
 
+import ir.sobhan.security.Role;
 import lombok.*;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import javax.persistence.Entity;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Setter
@@ -11,7 +16,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User{
+public class AppUser {
     @Id @GeneratedValue @Column(nullable = false)
     @Setter(value = AccessLevel.PRIVATE)
     private Long id;
@@ -39,4 +44,16 @@ public class User{
 
     @Setter(value = AccessLevel.PRIVATE)
     private Boolean isAdmin;
+
+    public List<SimpleGrantedAuthority> getAuthorities(){
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        if (isStudent())
+            authorities.add(new SimpleGrantedAuthority(Role.STUDENT.toString()));
+        if(getIsAdmin())
+            authorities.add(new SimpleGrantedAuthority(Role.ADMIN.toString()));
+        if(isInstructor())
+            authorities.add((new SimpleGrantedAuthority(Role.INSTRUCTOR.toString())));
+
+        return authorities;
+    }
 }

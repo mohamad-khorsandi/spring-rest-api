@@ -1,6 +1,6 @@
 package ir.sobhan.control;
 
-import ir.sobhan.exception.EntityNotFoundException;
+import ir.sobhan.business.exception.EntityNotFoundException;
 import ir.sobhan.model.input.InputDTO;
 import ir.sobhan.model.output.OutPutDTO;
 import lombok.AllArgsConstructor;
@@ -58,8 +58,8 @@ abstract public class Controller <ENTITY, INPUT_DTO extends InputDTO<ENTITY>>{
     }
 
     @PostMapping
-    ResponseEntity<?> create(@RequestBody INPUT_DTO inputEntity) throws Exception{
-        ENTITY entity = inputEntity.toRealObj(null);
+    ResponseEntity<?> create(@RequestBody INPUT_DTO dtoInputEntity) throws Exception{
+        ENTITY entity = dtoInputEntity.toRealObj(null);
 
         postInitializer.accept(entity);
         repository.save(entity);

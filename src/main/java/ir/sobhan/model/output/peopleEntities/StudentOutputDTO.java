@@ -1,12 +1,12 @@
 package ir.sobhan.model.output.peopleEntities;
 
-import ir.sobhan.model.entity.peopleEntities.User;
+import ir.sobhan.model.entity.peopleEntities.AppUser;
 import ir.sobhan.model.output.OutPutDTO;
 import lombok.Getter;
 
 @Getter
-public class StudentOutputDTO extends OutPutDTO<User> {
-    public StudentOutputDTO(User realObj) throws Exception {
+public class StudentOutputDTO extends OutPutDTO<AppUser> {
+    public StudentOutputDTO(AppUser realObj) throws Exception {
         super(realObj);
     }
     public Long id;
