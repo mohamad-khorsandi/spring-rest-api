@@ -1,16 +1,18 @@
 package ir.sobhan.security;
 
+import lombok.Getter;
+
+@Getter
 public enum Role {
     STUDENT, ADMIN, INSTRUCTOR;
 
-    final private String str;
-
-    Role(){
-        this.str = "ROLE_" + this;
+    Role() {
+        ROLE_str = "ROLE_" + this;
     }
 
-    @Override
-    public String toString() {
-        return str;
+    private final String ROLE_str;
+
+    String getStr(){
+        return this.toString();
     }
 }

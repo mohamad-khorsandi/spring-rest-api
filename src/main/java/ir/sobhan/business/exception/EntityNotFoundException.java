@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 public class EntityNotFoundException extends Exception{
-    public EntityNotFoundException(Long id) {
-        super("there is no entity with this id " + id);
+    public EntityNotFoundException(Object spec) {
+        super("there is no entity with this Specification:" + spec);
     }
 }
 
