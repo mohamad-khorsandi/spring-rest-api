@@ -5,6 +5,7 @@ import ir.sobhan.service.term.dao.TermRepository;
 import ir.sobhan.service.term.model.entity.Term;
 import ir.sobhan.service.term.model.input.TermInputDTO;
 import ir.sobhan.service.term.model.output.TermOutputDTO;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,4 +15,5 @@ public class TermController extends LCRUD<Term, TermInputDTO> {
     public TermController(TermRepository repository) {
         super(repository, TermOutputDTO.class);
     }
+
 }

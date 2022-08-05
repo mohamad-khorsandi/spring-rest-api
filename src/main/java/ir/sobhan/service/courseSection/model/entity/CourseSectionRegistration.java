@@ -25,5 +25,5 @@ public class CourseSectionRegistration {
     @ManyToOne
     CourseSection section;
 
-    Double score;
+    double score;
 }

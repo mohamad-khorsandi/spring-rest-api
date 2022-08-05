@@ -4,6 +4,7 @@ import ir.sobhan.service.courseSection.model.entity.CourseSectionRegistration;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -19,8 +20,8 @@ public class StudentInf{
 
     String studentId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    CourseSectionRegistration registration;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    Set<CourseSectionRegistration> registrationSet;
 
     @Enumerated(EnumType.STRING)
     Degree degree;

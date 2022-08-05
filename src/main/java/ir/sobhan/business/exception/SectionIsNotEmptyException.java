@@ -6,18 +6,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class EntityNotFoundException extends Exception{
-    public EntityNotFoundException(Object spec) {
-        super("there is no entity with this Specification:" + spec);
+public class SectionIsNotEmptyException extends Exception{
+    public SectionIsNotEmptyException() {
+        super("can not delete a non empty section");
     }
 }
 
 @ControllerAdvice
-class EntityNotFoundAdvice{
+class SectionIsNotEmptyAdvice{
     @ResponseBody
-    @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    String entityNotFoundHandler(EntityNotFoundException e){
+    @ExceptionHandler(SectionIsNotEmptyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    String SectionIsNotEmptyHandler(SectionIsNotEmptyException e){
         return e.getMessage();
     }
 }
+
+
