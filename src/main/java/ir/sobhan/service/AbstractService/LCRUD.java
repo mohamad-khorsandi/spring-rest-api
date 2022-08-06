@@ -12,6 +12,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -86,7 +87,8 @@ abstract public class LCRUD<ENTITY, INPUT_DTO extends InputDTO<ENTITY>>{
     }
 
     @DeleteMapping("{id}")
-    ResponseEntity<?> delete(@PathVariable Long id){
+    ResponseEntity<?> delete(@PathVariable Long id) throws NotFoundException {
+        repository.findById(id).filter(getFilter).orElseThrow(() -> new NotFoundException(id.toString()));
         repository.deleteById(id);
         return ResponseEntity.ok().build();
     }

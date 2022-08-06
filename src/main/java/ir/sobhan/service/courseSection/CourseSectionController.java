@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -40,6 +41,8 @@ public class CourseSectionController {
     //LCRUD ------------------------------------------------------------------------------------------------------
     @GetMapping
     public ResponseEntity<?> list(@RequestParam Long termId) throws NotFoundException {
+        get.termById(termId);
+
         List<?> list = repository.findAll().stream()
                 .filter((courseSection) -> courseSection.getTerm().getId().equals(termId))
                 .map((section -> {
@@ -49,9 +52,6 @@ public class CourseSectionController {
                         throw new RuntimeException(e);
                     }
                 })).collect(Collectors.toList());
-
-        if (list.isEmpty())
-            throw new NotFoundException("term", termId);
 
         CollectionModel<?> collectionModel = CollectionModel.of(list);
         return ResponseEntity.ok(collectionModel);
@@ -85,17 +85,29 @@ public class CourseSectionController {
     }
 
     @PutMapping("{sectionId}")
-    ResponseEntity<?> update(@RequestBody CourseSectionInputDTO inputEntity, @PathVariable Long sectionId, Authentication authentication) throws Exception {
+    ResponseEntity<?> update(@PathVariable Long sectionId, @RequestParam(required = false) Long termId, @RequestParam(required = false) Long courseId, @RequestParam(required = false) Long instructorId, Authentication authentication) throws Exception {
         CourseSection section = get.sectionById(sectionId);
-
         User user = get.userByUsername(authentication.getName());
+
         if (!user.isAdmin() && !user.getUsername().equals(section.getInstructor().getUsername()))
             throw new AccessDeniedException("only instructor of this course can do this operation");
 
-        inputEntity.toRealObj(section);
+        if (termId != null){
+            Term term = get.termById(termId);
+            section.setTerm(term);
+        }
+
+        if (courseId != null){
+            Course course = get.courseById(courseId);
+            section.setCourse(course);
+        }
+
+        if(instructorId != null){
+            User instructor = get.getInstructorById(instructorId);
+            section.setInstructor(instructor);
+        }
 
         repository.save(section);
-
         EntityModel<?> entityModel = toOutDTOModel(section);
         return ResponseEntity.ok(entityModel);
     }

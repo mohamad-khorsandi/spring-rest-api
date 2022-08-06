@@ -19,4 +19,5 @@ public class CourseSectionOutputDTO extends OutPutDTO<CourseSection> {
     private Integer studentCount;
     public TermOutputDTO term;
     public Course course;
+    public LightInstructorOutputDTO instructor;
 }

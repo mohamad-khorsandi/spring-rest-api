@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.websocket.server.PathParam;
 
 @RestController
-@RequestMapping("admin/activeUsers")
+@RequestMapping("admin/active-user")
 @RequiredArgsConstructor
 public class AdminController {
     private final DBGetter get;

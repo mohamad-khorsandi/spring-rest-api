@@ -49,17 +49,15 @@ public class initializer implements CommandLineRunner {
         courseRepository.save(course2);
 
         //todo: what about presist error
-        CourseSection section1 = CourseSection.builder().course(course1).term(term1).instructor(inst).build();
-        CourseSection section2 = CourseSection.builder().course(course2).term(term2).instructor(inst).build();
-        CourseSection section3 = CourseSection.builder().course(course2).term(term1).instructor(inst).build();
-        CourseSection section4 = CourseSection.builder().course(course1).term(term2).instructor(inst).build();
+//        CourseSection section1 = CourseSection.builder().term(term1).build();
+//        CourseSection section2 = CourseSection.builder().course(course2).term(term2).instructor(inst).build();
+//        CourseSection section3 = CourseSection.builder().course(course2).term(term1).instructor(inst).build();
+//        CourseSection section4 = CourseSection.builder().course(course1).term(term2).instructor(inst).build();
 
-        sectionRepository.save(section1);
-        sectionRepository.save(section2);
-        sectionRepository.save(section3);
-        sectionRepository.save(section4);
-
-
+//        sectionRepository.save(section1);
+//        sectionRepository.save(section2);
+//        sectionRepository.save(section3);
+//        sectionRepository.save(section4);
     }
 
     User makeUser(String username, String pass, boolean isStu, boolean isAd, boolean isInst){

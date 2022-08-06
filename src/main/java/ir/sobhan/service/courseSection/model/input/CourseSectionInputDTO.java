@@ -6,5 +6,4 @@ public class CourseSectionInputDTO extends InputDTO<CourseSection> {
     public CourseSectionInputDTO() {
         super(CourseSection.class);
     }
-
 }

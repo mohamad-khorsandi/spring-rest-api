@@ -51,7 +51,7 @@ public class User {
             authorities.add(new SimpleGrantedAuthority(Role.STUDENT.getROLE_str()));
 
         if(isAdmin())
-            authorities.add(new SimpleGrantedAuthority(Role.ADMIN.toString()));
+            authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getROLE_str()));
 
         if(isInstructor())
             authorities.add((new SimpleGrantedAuthority(Role.INSTRUCTOR.getROLE_str())));

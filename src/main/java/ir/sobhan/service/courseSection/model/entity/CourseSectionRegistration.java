@@ -19,10 +19,12 @@ public class CourseSectionRegistration {
     @Setter(value = AccessLevel.PRIVATE)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn
     User student;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn
     CourseSection section;
 
     double score;

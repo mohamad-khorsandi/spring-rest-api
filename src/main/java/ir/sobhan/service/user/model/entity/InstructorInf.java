@@ -1,8 +1,10 @@
 package ir.sobhan.service.user.model.entity;
 
+import ir.sobhan.service.courseSection.model.entity.CourseSection;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -13,6 +15,7 @@ public class InstructorInf {
     @Setter(value = AccessLevel.PRIVATE)
     private Long id;
     private Rank rank;
+
     public enum Rank{
         ASSISTANT, ASSOCIATE_FULL
     }
