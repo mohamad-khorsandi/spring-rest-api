@@ -6,13 +6,14 @@ import ir.sobhan.service.AbstractService.model.output.OutPutDTO;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
+import javax.websocket.server.PathParam;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -41,8 +42,10 @@ abstract public class LCRUD<ENTITY, INPUT_DTO extends InputDTO<ENTITY>>{
     String idFieldName = "id";
 
     @GetMapping
-    public ResponseEntity<?> list(){
-        List<?> list = repository.findAll().stream().filter(getFilter)
+    public ResponseEntity<?> list(@PathParam("page-number") Integer pageNumber,
+                                  @PathParam("page-size") Integer pageSize){
+        List<?> list = repository.findAll(PageRequest.of(pageNumber, pageSize))
+                .stream().filter(getFilter)
                 .map((entity -> {
                     try {
                         return toOutDTOModel(entity);

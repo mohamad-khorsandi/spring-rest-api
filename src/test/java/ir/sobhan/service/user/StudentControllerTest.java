@@ -1,7 +1,5 @@
 package ir.sobhan.service.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import ir.sobhan.service.AbstractService.DBGetter;
 import ir.sobhan.service.courseSection.model.entity.CourseSection;
 import ir.sobhan.service.courseSection.model.entity.CourseSectionRegistration;
@@ -16,13 +14,6 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
-import org.springframework.test.web.servlet.*;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.*;
 
@@ -59,22 +50,15 @@ class StudentControllerTest {
         Assertions.assertEquals(response.getStatusCode(), HttpStatus.OK);
 
         Collection<TermOfStudentOutputDTO> content = Objects.requireNonNull(response.getBody()).getContent();
-        ArrayList<TermOfStudentOutputDTO> arrayList = new ArrayList<>(content);
 
         Assertions.assertEquals(2, content.size());
 
-        for (int i = 0; i < 2; i++) {
-
-        }
         content.forEach(term -> {
             if (term.getId().equals(term10.getId()))
                 Assertions.assertEquals(15.3, term.getAve());
             else
                 Assertions.assertEquals(10.0, term.getAve());
         });
-
-
-
     }
 
     CourseSectionRegistration makeRegisteration(Term term, double grade){
