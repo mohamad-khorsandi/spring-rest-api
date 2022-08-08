@@ -1,7 +1,6 @@
 package ir.sobhan.business;
 import ir.sobhan.service.course.dao.CourseRepository;
 import ir.sobhan.service.course.model.entity.Course;
-import ir.sobhan.service.courseSection.dao.CourseSectionRepository;
 import ir.sobhan.service.term.dao.TermRepository;
 import ir.sobhan.service.term.model.entity.Term;
 import ir.sobhan.service.user.dao.UserRepository;
@@ -22,15 +21,14 @@ public class Initializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final TermRepository termRepository;
     private final CourseRepository courseRepository;
-    private final CourseSectionRepository sectionRepository;
     static Integer counter = 0;
     @Override
     public void run(String... args) {
-        User stu1 = makeUser("stu1", "pass", true, false, false);
-        User stu2 = makeUser("stu2", "pass", true, false, false);
-        User stu3 = makeUser("stu3", "pass", true, false, false);
+        makeUser("stu1", "pass", true, false, false);
+        makeUser("stu2", "pass", true, false, false);
+        makeUser("stu3", "pass", true, false, false);
 
-        User inst = makeUser("ins", "pass", false, false, true);
+        makeUser("ins", "pass", false, false, true);
 
         makeUser("adm", "pass", false, true, false);
 
@@ -45,18 +43,9 @@ public class Initializer implements CommandLineRunner {
         courseRepository.save(course2);
 
         //todo: what about presist error
-//        CourseSection section1 = CourseSection.builder().term(term1).build();
-//        CourseSection section2 = CourseSection.builder().course(course2).term(term2).instructor(inst).build();
-//        CourseSection section3 = CourseSection.builder().course(course2).term(term1).instructor(inst).build();
-//        CourseSection section4 = CourseSection.builder().course(course1).term(term2).instructor(inst).build();
-
-//        sectionRepository.save(section1);
-//        sectionRepository.save(section2);
-//        sectionRepository.save(section3);
-//        sectionRepository.save(section4);
     }
 
-    public User makeUser(String username, String pass, boolean isStu, boolean isAd, boolean isInst){
+    public void makeUser(String username, String pass, boolean isStu, boolean isAd, boolean isInst){
         User.UserBuilder userBuilder = User.builder().username(username).password(pass).
                 name(counter.toString()).phone(counter.toString()).nationalId(counter.toString());
         counter++;
@@ -85,7 +74,5 @@ public class Initializer implements CommandLineRunner {
 
         userRepository.save(user);
         log.info("data base init : " + user);
-
-        return user;
     }
 }
