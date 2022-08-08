@@ -62,8 +62,18 @@ class StudentControllerTest {
         ArrayList<TermOfStudentOutputDTO> arrayList = new ArrayList<>(content);
 
         Assertions.assertEquals(2, content.size());
-        Assertions.assertEquals(10.0, arrayList.get(0).getAve());
-        Assertions.assertEquals(15.3, arrayList.get(1).getAve());
+
+        for (int i = 0; i < 2; i++) {
+
+        }
+        content.forEach(term -> {
+            if (term.getId().equals(term10.getId()))
+                Assertions.assertEquals(15.3, term.getAve());
+            else
+                Assertions.assertEquals(10.0, term.getAve());
+        });
+
+
 
     }
 
