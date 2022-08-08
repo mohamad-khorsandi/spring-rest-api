@@ -2,10 +2,11 @@ package ir.sobhan.service.user.model.output;
 
 import ir.sobhan.service.AbstractService.model.output.OutPutDTO;
 import ir.sobhan.service.term.model.entity.Term;
-import ir.sobhan.service.user.model.entity.User;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class TermOfStudentOutputDTO extends OutPutDTO<Term> {
     public TermOfStudentOutputDTO(Term realObj, double sum, double count) throws Exception {
         super(realObj);

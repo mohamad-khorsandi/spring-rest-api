@@ -13,6 +13,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(indexes = @Index(columnList = "id", unique = true))
 public class Term {
     @Id
     @GeneratedValue

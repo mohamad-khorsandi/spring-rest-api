@@ -10,6 +10,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(indexes = @Index(columnList = "id", unique = true))
 public class InstructorInf {
     @Id @GeneratedValue @Column(nullable = false)
     @Setter(value = AccessLevel.PRIVATE)

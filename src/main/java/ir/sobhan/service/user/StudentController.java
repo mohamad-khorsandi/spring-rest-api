@@ -12,7 +12,9 @@ import ir.sobhan.service.user.model.entity.User;
 import ir.sobhan.service.user.model.input.StudentInputDTO;
 import ir.sobhan.service.user.model.output.StudentOutputDTO;
 import ir.sobhan.service.user.model.output.TermOfStudentOutputDTO;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,12 +29,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("students")
 @Slf4j
+@Setter
 public class StudentController extends LCRUD<User, StudentInputDTO> {
     public StudentController(UserRepository repository, DBGetter get) {
         super(repository, StudentOutputDTO.class, User::isStudent, (user -> user.setStudent(true)));
         this.get = get;
     }
-    final private DBGetter get;
+    DBGetter get;
 
     @GetMapping({"{stuId}/grades"})
     ResponseEntity<?> showGrades(@PathVariable Long stuId, @RequestParam(name = "termId") Long termId) throws NotFoundException {

@@ -2,6 +2,8 @@ package ir.sobhan.service.courseSection.model.entity;
 
 import ir.sobhan.service.user.model.entity.User;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -12,6 +14,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(indexes = @Index(columnList = "id", unique = true))
 public class CourseSectionRegistration {
     @Id
     @GeneratedValue
@@ -21,6 +24,7 @@ public class CourseSectionRegistration {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn
+    @OnDelete(action = OnDeleteAction.CASCADE)
     User student;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

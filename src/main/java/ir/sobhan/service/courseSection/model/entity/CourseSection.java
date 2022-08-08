@@ -18,6 +18,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(indexes = @Index(columnList = "id", unique = true))
 public class CourseSection {
     @Id
     @GeneratedValue
@@ -29,7 +30,7 @@ public class CourseSection {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Term term;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "section")
     private Set<CourseSectionRegistration> registrationList;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

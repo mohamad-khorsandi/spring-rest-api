@@ -2,8 +2,6 @@ package ir.sobhan.business;
 import ir.sobhan.service.course.dao.CourseRepository;
 import ir.sobhan.service.course.model.entity.Course;
 import ir.sobhan.service.courseSection.dao.CourseSectionRepository;
-import ir.sobhan.service.courseSection.model.entity.CourseSection;
-import ir.sobhan.service.courseSection.model.entity.CourseSectionRegistration;
 import ir.sobhan.service.term.dao.TermRepository;
 import ir.sobhan.service.term.model.entity.Term;
 import ir.sobhan.service.user.dao.UserRepository;
@@ -15,15 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static ir.sobhan.service.user.model.entity.InstructorInf.Rank.ASSISTANT;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class initializer implements CommandLineRunner {
+public class Initializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final TermRepository termRepository;
     private final CourseRepository courseRepository;
@@ -60,7 +55,7 @@ public class initializer implements CommandLineRunner {
 //        sectionRepository.save(section4);
     }
 
-    User makeUser(String username, String pass, boolean isStu, boolean isAd, boolean isInst){
+    public User makeUser(String username, String pass, boolean isStu, boolean isAd, boolean isInst){
         User.UserBuilder userBuilder = User.builder().username(username).password(pass).
                 name(counter.toString()).phone(counter.toString()).nationalId(counter.toString());
         counter++;
