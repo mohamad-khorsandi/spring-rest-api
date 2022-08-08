@@ -1,6 +1,7 @@
 package ir.sobhan.service.AbstractService;
 
 import ir.sobhan.business.exception.NotFoundException;
+import ir.sobhan.business.exception.BadInputException;
 import ir.sobhan.service.AbstractService.model.input.InputDTO;
 import ir.sobhan.service.AbstractService.model.output.OutPutDTO;
 import lombok.AllArgsConstructor;
@@ -71,7 +72,11 @@ abstract public class LCRUD<ENTITY, INPUT_DTO extends InputDTO<ENTITY>>{
         ENTITY entity = dtoInputEntity.toRealObj(null);
 
         postInitializer.accept(entity);
-        repository.save(entity);
+        try {
+            repository.save(entity);
+        } catch (RuntimeException e){
+            throw new BadInputException();
+        }
 
         EntityModel<?> entityModel = toOutDTOModel(entity);
         return ResponseEntity.created(linkTo(methodOn(LCRUD.class).read(getIdOfEntity(entity))).toUri()).body(entityModel);
