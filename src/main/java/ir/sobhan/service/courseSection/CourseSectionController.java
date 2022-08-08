@@ -20,9 +20,9 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -134,7 +134,6 @@ public class CourseSectionController {
     }
     //CRUD END ------------------------------------------------------------------------------------------------------
 
-
     @GetMapping("{sectionId}/students")
     public ResponseEntity<?> listStudents(@PathVariable Long sectionId) throws NotFoundException {
         CourseSection section = get.sectionById(sectionId);
@@ -163,15 +162,14 @@ public class CourseSectionController {
 
         section.getRegistrationList().add(registration);
         stu.getStudentInf().getRegistrationSet().add(registration);
-        repository.save(section);
-        userRepository.save(stu);
+        registrationRepository.save(registration);
 
         EntityModel<?> entityModel = toOutDTOModel(section);
         return ResponseEntity.ok(entityModel);
     }
 
     @PutMapping("{sectionId}/{studentId}/setGrade")
-    ResponseEntity<?> setGrade(@PathVariable Long sectionId, @PathVariable Long studentId, @RequestBody double grade) throws NotFoundException {
+    ResponseEntity<?> setGrade(@PathVariable Long sectionId, @PathVariable Long studentId, @PathParam("grade") double grade) throws NotFoundException {
         CourseSection section = get.sectionById(sectionId);
 
         CourseSectionRegistration registration = section.getRegistrationList().stream()

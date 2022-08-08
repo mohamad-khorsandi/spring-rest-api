@@ -31,15 +31,16 @@ public class Initializer implements CommandLineRunner {
         User stu3 = makeUser("stu3", "pass", true, false, false);
 
         User inst = makeUser("ins", "pass", false, false, true);
+
         makeUser("adm", "pass", false, true, false);
 
-        Term term1 = Term.builder().title("99-00").open(true).build();
-        Term term2 = Term.builder().title("98-99").open(false).build();
+        Term term1 = Term.builder().title("99-00").open(true).id(10L).build();
+        Term term2 = Term.builder().title("98-99").open(false).id(11L).build();
         termRepository.save(term1);
         termRepository.save(term2);
 
-        Course course1 = Course.builder().title("data structure").build();
-        Course course2 = Course.builder().title("programming").build();
+        Course course1 = Course.builder().title("data structure").id(12L).build();
+        Course course2 = Course.builder().title("programming").id(13L).build();
         courseRepository.save(course1);
         courseRepository.save(course2);
 

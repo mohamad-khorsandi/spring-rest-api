@@ -4,7 +4,6 @@ import ir.sobhan.business.Pair;
 import ir.sobhan.business.exception.NotFoundException;
 import ir.sobhan.service.AbstractService.DBGetter;
 import ir.sobhan.service.AbstractService.LCRUD;
-import ir.sobhan.service.courseSection.model.entity.CourseSectionRegistration;
 import ir.sobhan.service.courseSection.model.output.CourseSectionRegistrationOutputDTO;
 import ir.sobhan.service.term.model.entity.Term;
 import ir.sobhan.service.user.dao.UserRepository;
@@ -14,7 +13,6 @@ import ir.sobhan.service.user.model.output.StudentOutputDTO;
 import ir.sobhan.service.user.model.output.TermOfStudentOutputDTO;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Primary;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -37,9 +35,9 @@ public class StudentController extends LCRUD<User, StudentInputDTO> {
     }
     DBGetter get;
 
-    @GetMapping({"{stuId}/grades"})
-    ResponseEntity<?> showGrades(@PathVariable Long stuId, @RequestParam(name = "termId") Long termId) throws NotFoundException {
-        User student = get.studentById(stuId);
+    @GetMapping({"{studentId}/grades"})
+    ResponseEntity<?> showGrades(@PathVariable Long studentId, @RequestParam(name = "termId") Long termId) throws NotFoundException {
+        User student = get.studentById(studentId);
 
         Map<String, Object> outputMap = new HashMap<>();
 

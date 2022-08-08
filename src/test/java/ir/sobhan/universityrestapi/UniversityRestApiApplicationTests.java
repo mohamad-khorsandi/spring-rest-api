@@ -1,8 +1,9 @@
 package ir.sobhan.universityrestapi;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import ir.sobhan.business.exception.NotFoundException;
 import ir.sobhan.service.AbstractService.DBGetter;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,7 +27,6 @@ import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -37,8 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)//todo aks
-@ContextConfiguration
+@ContextConfiguration()
 @WebAppConfiguration
+@Slf4j
 class UniversityRestApiApplicationTests {
 
     @Autowired
@@ -46,8 +46,10 @@ class UniversityRestApiApplicationTests {
 
     private MockMvc MockMvc;
     private Integer sectionId;
-    private final Integer studentId = 1;
-    private final Integer insId = 7;
+    private Integer studentId;
+    private Integer instructorId;
+    DBGetter dbGet;
+
     static UsernamePasswordAuthenticationToken stuAuthentication;
     static UsernamePasswordAuthenticationToken insAuthentication;
 
@@ -60,21 +62,22 @@ class UniversityRestApiApplicationTests {
         Collection<GrantedAuthority> authorities2 = new ArrayList<>();
         authorities2.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
         stuAuthentication = new UsernamePasswordAuthenticationToken("stu1", null, authorities2);
+
     }
 
     @BeforeEach
-    public void makeBeansOfApplication(){
+    public void makeBeansOfApplication() throws NotFoundException {
         MockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
-    }
 
-    @Test
-    public void beansCreationTest() throws Exception {
         ServletContext servletContext = webApplicationContext.getServletContext();
+
         Assertions.assertNotNull(servletContext);
         Assertions.assertTrue(servletContext instanceof MockServletContext);
         Assertions.assertNotNull(webApplicationContext.getBean("DBGetter"));
-        DBGetter get = (DBGetter)webApplicationContext.getBean("DBGetter");
-        Assertions.assertEquals("stu1", get.studentById(1L).getUsername());
+
+        dbGet = (DBGetter)webApplicationContext.getBean("DBGetter");
+        studentId = Math.toIntExact(dbGet.studentByUsername("stu1").getId());
+        instructorId = Math.toIntExact(dbGet.instructorByUsername("ins").getId());
     }
 
     @Test
@@ -94,11 +97,10 @@ class UniversityRestApiApplicationTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.term.id").value(10))
                 .andExpect(jsonPath("$.course.id").value(13))
-                .andExpect(jsonPath("$.instructor.id").value(insId))
+                .andExpect(jsonPath("$.instructor.id").value(instructorId))
                 .andReturn().getResponse().getContentAsString();
 
         this.sectionId = JsonPath.read(response, "$.id");
-
     }
 
     public void registerToSection() throws Exception {
@@ -113,19 +115,18 @@ class UniversityRestApiApplicationTests {
     public void setGrades() throws Exception {
         MockMvc.perform(put("/course-sections/{sectionId}/{studentId}/setGrade", sectionId, studentId)
                         .with(authentication(insAuthentication))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content("\"12\"")
+                        .param("grade", String.valueOf(12))
                 )
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
     }
 
     public void viewGrades() throws Exception {
-        MockMvc.perform(get("/students/{stuId}/grades", studentId)
-                        .with(authentication(stuAuthentication))
-                        .param("termId", String.valueOf(10))
-                ).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.average").value(12))
-                .andExpect(jsonPath("$.sections.content[0].score").value(12));
+        MockMvc.perform(get("/students/{studentId}/grades", studentId)
+                .with(authentication(stuAuthentication))
+                .param("termId", String.valueOf(10)))
+                .andDo(print())
+                .andExpect(jsonPath("$.average").value(12.0))
+                .andExpect(jsonPath("$.sections.content[0].score").value(12.0));
     }
 }

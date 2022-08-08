@@ -1,15 +1,18 @@
 package ir.sobhan.service.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import ir.sobhan.service.AbstractService.DBGetter;
 import ir.sobhan.service.courseSection.model.entity.CourseSection;
 import ir.sobhan.service.courseSection.model.entity.CourseSectionRegistration;
 import ir.sobhan.service.term.model.entity.Term;
 import ir.sobhan.service.user.model.entity.StudentInf;
 import ir.sobhan.service.user.model.entity.User;
+import ir.sobhan.service.user.model.output.TermOfStudentOutputDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,8 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import org.springframework.test.web.servlet.*;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 class StudentControllerTest {
 
@@ -52,19 +54,19 @@ class StudentControllerTest {
         studentController.get = get;
         Mockito.doCallRealMethod().when(studentController).totalGrades(authentication);
 
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(studentController).build();
+        ResponseEntity<CollectionModel<TermOfStudentOutputDTO>> response = (ResponseEntity<CollectionModel<TermOfStudentOutputDTO>>) studentController.totalGrades(authentication);
 
-        mockMvc.perform(get("/students/total-grades")
-                .with(authentication(authentication))
-        ).andDo(print());
+        Assertions.assertEquals(response.getStatusCode(), HttpStatus.OK);
 
-//        ResponseEntity response = studentController.totalGrades(authentication);
-//        Assertions.assertEquals(response.getStatusCode(), HttpStatus.OK);
-//
-//        String json = response.getBody().toString();
-//        System.out.println(json);
+        Collection<TermOfStudentOutputDTO> content = Objects.requireNonNull(response.getBody()).getContent();
+        ArrayList<TermOfStudentOutputDTO> arrayList = new ArrayList<>(content);
+
+        Assertions.assertEquals(2, content.size());
+        Assertions.assertEquals(10.0, arrayList.get(0).getAve());
+        Assertions.assertEquals(15.3, arrayList.get(1).getAve());
 
     }
+
     CourseSectionRegistration makeRegisteration(Term term, double grade){
         CourseSection section = Mockito.mock(CourseSection.class);
         Mockito.when(section.getTerm()).thenReturn(term);
