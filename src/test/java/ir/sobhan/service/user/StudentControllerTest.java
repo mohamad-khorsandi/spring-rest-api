@@ -4,20 +4,44 @@ import ir.sobhan.service.AbstractService.DBGetter;
 import ir.sobhan.service.courseSection.model.entity.CourseSection;
 import ir.sobhan.service.courseSection.model.entity.CourseSectionRegistration;
 import ir.sobhan.service.term.model.entity.Term;
+import ir.sobhan.service.user.dao.UserRepository;
 import ir.sobhan.service.user.model.entity.StudentInf;
 import ir.sobhan.service.user.model.entity.User;
 import ir.sobhan.service.user.model.output.TermOfStudentOutputDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.*;
 
+@SpringBootTest
+@ContextConfiguration(classes = {StudentController.class})
 class StudentControllerTest {
+    @MockBean
+    StudentInf studentInf;
+
+    @MockBean
+    DBGetter get;
+
+    @MockBean
+    User stu;
+
+    @MockBean
+    UserRepository repository;
+
+    @MockBean
+    Authentication authentication;
+
+    @Autowired
+    StudentController studentController;
 
     @Test
     void totalGradesTest() throws Exception {
@@ -30,20 +54,13 @@ class StudentControllerTest {
         registrationSet.add(makeRegisteration(term11, 11));
         registrationSet.add(makeRegisteration(term11, 9));
 
-        StudentInf studentInf = Mockito.mock(StudentInf.class);
         Mockito.when(studentInf.getRegistrationSet()).thenReturn(registrationSet);
 
-        User stu = Mockito.mock(User.class);
         Mockito.when(stu.getStudentInf()).thenReturn(studentInf);
 
-        DBGetter get = Mockito.mock(DBGetter.class);
         Mockito.when(get.studentByUsername(Mockito.any())).thenReturn(stu);
 
-        Authentication authentication = Mockito.mock(Authentication.class);
-
-        StudentController studentController = Mockito.mock(StudentController.class);
         studentController.get = get;
-        Mockito.doCallRealMethod().when(studentController).totalGrades(authentication);
 
         ResponseEntity<CollectionModel<TermOfStudentOutputDTO>> response = (ResponseEntity<CollectionModel<TermOfStudentOutputDTO>>) studentController.totalGrades(authentication);
 
