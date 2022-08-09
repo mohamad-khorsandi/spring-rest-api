@@ -1,12 +1,11 @@
-package ir.sobhan.security;
+package ir.sobhan.business.SecurityService;
 
 import lombok.Getter;
 
-import static ir.sobhan.security.Role.*;
-import static ir.sobhan.security.Role.STUDENT;
+import static ir.sobhan.business.SecurityService.Role.*;
 
 @Getter
-public enum RoleSet{
+public enum RoleSet {
     SA(STUDENT, ADMIN), IA(INSTRUCTOR, ADMIN), SIA(STUDENT, INSTRUCTOR, ADMIN), I(INSTRUCTOR), A(ADMIN), S(STUDENT);
 
     private final String[] roles;

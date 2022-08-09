@@ -2,10 +2,11 @@ package ir.sobhan.service.AbstractService.model.input;
 
 import java.lang.reflect.Field;
 
-abstract public class InputDTO<R_CLASS>{
+abstract public class InputDTO<R_CLASS> {
     public InputDTO(Class<R_CLASS> type) {
         this.realClassType = type;
     }
+
     private final Class<R_CLASS> realClassType;
 
     /**
@@ -28,8 +29,8 @@ abstract public class InputDTO<R_CLASS>{
             realField.setAccessible(true);
 
             if (inputValue instanceof InputDTO) {
-                InputDTO DTOinputValue = (InputDTO) inputValue;
-                Object realInputValue = DTOinputValue.toRealObj(realField.get(realObj));
+                InputDTO DTOInputValue = (InputDTO) inputValue;
+                Object realInputValue = DTOInputValue.toRealObj(realField.get(realObj));
                 realField.set(realObj, realInputValue);
                 continue;
             }

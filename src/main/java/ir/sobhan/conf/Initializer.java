@@ -1,4 +1,5 @@
-package ir.sobhan.business;
+package ir.sobhan.conf;
+
 import ir.sobhan.service.course.dao.CourseRepository;
 import ir.sobhan.service.course.model.entity.Course;
 import ir.sobhan.service.term.dao.TermRepository;
@@ -22,6 +23,7 @@ public class Initializer implements CommandLineRunner {
     private final TermRepository termRepository;
     private final CourseRepository courseRepository;
     static Integer counter = 0;
+
     @Override
     public void run(String... args) {
         makeUser("stu1", "pass", true, false, false);
@@ -41,32 +43,31 @@ public class Initializer implements CommandLineRunner {
         Course course2 = Course.builder().title("programming").id(13L).build();
         courseRepository.save(course1);
         courseRepository.save(course2);
-
         //todo: what about presist error
     }
 
-    public void makeUser(String username, String pass, boolean isStu, boolean isAd, boolean isInst){
+    public void makeUser(String username, String pass, boolean isStu, boolean isAd, boolean isInst) {
         User.UserBuilder userBuilder = User.builder().username(username).password(pass).
                 name(counter.toString()).phone(counter.toString()).nationalId(counter.toString());
         counter++;
 
         User user = null;
 
-        if(isStu){
-            StudentInf studentInf =StudentInf.builder().degree(StudentInf.Degree.BS).build();
-            userBuilder.isStudent(true);
+        if (isStu) {
+            StudentInf studentInf = StudentInf.builder().degree(StudentInf.Degree.BS).build();
+            userBuilder.student(true);
             user = userBuilder.build();
             user.setStudentInf(studentInf);
         }
 
-        if(isInst){
+        if (isInst) {
             InstructorInf instructorInf = InstructorInf.builder().rank(ASSISTANT).build();
-            userBuilder.isInstructor(true);
+            userBuilder.instructor(true);
             user = userBuilder.build();
             user.setInstructorInf(instructorInf);
         }
 
-        if(isAd){
+        if (isAd) {
             user = userBuilder.build();
             user.setAdmin(true);
             user.setActive(true);

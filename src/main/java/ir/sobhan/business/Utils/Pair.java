@@ -1,4 +1,4 @@
-package ir.sobhan.business;
+package ir.sobhan.business.Utils;
 
 import lombok.Data;
 
@@ -11,8 +11,4 @@ public class Pair<K, V> {
 
     K key;
     V val;
-
-    public Pair() {
-
-    }
 }

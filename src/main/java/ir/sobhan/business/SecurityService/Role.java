@@ -1,4 +1,4 @@
-package ir.sobhan.security;
+package ir.sobhan.business.SecurityService;
 
 import lombok.Getter;
 
@@ -12,7 +12,7 @@ public enum Role {
 
     private final String ROLE_str;
 
-    public String getStr(){
+    public String getStr() {
         return this.toString();
     }
 }

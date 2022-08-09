@@ -1,15 +1,14 @@
 package ir.sobhan.business.SecurityService;
 
-import ir.sobhan.security.Role;
-import ir.sobhan.security.RoleSet;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
 import static org.springframework.http.HttpMethod.*;
-import static org.springframework.http.HttpMethod.DELETE;
 
 @Service
 public class SecurityUtils {
@@ -28,9 +27,7 @@ public class SecurityUtils {
     public void setAuthorities(HttpSecurity http, Map<String, RoleSet> accessMap) throws Exception {
         AtomicReference<ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry> lastConfig = new AtomicReference<>(http.authorizeRequests());
 
-        accessMap.forEach((endpoint, roleSet) -> {
-                    lastConfig.set(lastConfig.get().antMatchers(endpoint).hasAnyRole(roleSet.getRoles()));
-                }
+        accessMap.forEach((endpoint, roleSet) -> lastConfig.set(lastConfig.get().antMatchers(endpoint).hasAnyRole(roleSet.getRoles()))
         );
     }
 

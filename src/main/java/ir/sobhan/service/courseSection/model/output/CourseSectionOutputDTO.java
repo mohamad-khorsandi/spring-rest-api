@@ -8,9 +8,8 @@ import lombok.Getter;
 
 @Getter
 public class CourseSectionOutputDTO extends OutPutDTO<CourseSection> {
-    public CourseSectionOutputDTO(CourseSection realObj) throws Exception {
+    public CourseSectionOutputDTO(CourseSection realObj) {
         super(realObj);
-
         if (realObj.getRegistrationList() != null)
             studentCount = realObj.getRegistrationList().size();
     }

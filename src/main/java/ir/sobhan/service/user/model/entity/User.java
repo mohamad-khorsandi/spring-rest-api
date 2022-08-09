@@ -1,13 +1,8 @@
 package ir.sobhan.service.user.model.entity;
 
-import ir.sobhan.security.Role;
 import lombok.*;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import javax.persistence.Entity;
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Setter
@@ -19,8 +14,11 @@ import java.util.List;
         @Index(columnList = "id", unique = true),
         @Index(columnList = "username", unique = true)
 })
+
 public class User {
-    @Id @GeneratedValue @Column(nullable = false)
+    @Id
+    @GeneratedValue
+    @Column(nullable = false)
     @Setter(value = AccessLevel.PRIVATE)
     private Long id;
 
@@ -42,23 +40,9 @@ public class User {
     private String phone;
     @Column(unique = true, nullable = false)
     private String nationalId;
-    private boolean isStudent;
-    private boolean isInstructor;
-    private boolean isActive;
-    private boolean isAdmin;
 
-    public List<SimpleGrantedAuthority> getAuthorities(){
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-        if (isStudent())
-            authorities.add(new SimpleGrantedAuthority(Role.STUDENT.getROLE_str()));
-
-        if(isAdmin())
-            authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getROLE_str()));
-
-        if(isInstructor())
-            authorities.add((new SimpleGrantedAuthority(Role.INSTRUCTOR.getROLE_str())));
-
-        return authorities;
-    }
+    private boolean student;
+    private boolean instructor;
+    private boolean active;
+    private boolean admin;
 }

@@ -14,8 +14,10 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(indexes = @Index(columnList = "id", unique = true))
-public class StudentInf{
-    @Id @GeneratedValue @Column(nullable = false)
+public class StudentInf {
+    @Id
+    @GeneratedValue
+    @Column(nullable = false)
     @Setter(value = AccessLevel.PRIVATE)
     private Long id;
 
@@ -27,7 +29,7 @@ public class StudentInf{
     @Enumerated(EnumType.STRING)
     Degree degree;
 
-    public enum Degree{
-        BS, MS, PHD;
+    public enum Degree {
+        BS, MS, PHD
     }
 }

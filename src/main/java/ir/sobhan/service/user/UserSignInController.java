@@ -1,9 +1,6 @@
 package ir.sobhan.service.user;
 
-import ir.sobhan.business.exception.BadInputException;
-import ir.sobhan.service.AbstractService.LCRUD;
-import ir.sobhan.service.AbstractService.model.output.OutPutDTO;
-import ir.sobhan.service.user.dao.UserRepository;
+import ir.sobhan.business.DBService.InstructorDBService;
 import ir.sobhan.service.user.model.entity.User;
 import ir.sobhan.service.user.model.input.InstructorInputDTO;
 import ir.sobhan.service.user.model.input.StudentInputDTO;
@@ -22,19 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserSignInController {
 
-    private final UserRepository repository;
+    final private InstructorDBService db;
 
     @PostMapping("/student")
-    ResponseEntity<?> create(@RequestBody StudentInputDTO studentInputDTO) throws Exception{
+    ResponseEntity<?> create(@RequestBody StudentInputDTO studentInputDTO) throws Exception {
         User stu = studentInputDTO.toRealObj(null);
 
         stu.setStudent(true);
 
-        try {
-            repository.save(stu);
-        } catch (RuntimeException e){
-            throw new BadInputException();
-        }
+        db.save(stu);
 
         EntityModel<?> entityModel = new StudentOutputDTO(stu).toModel();
 
@@ -42,16 +35,12 @@ public class UserSignInController {
     }
 
     @PostMapping("/instructor")
-    ResponseEntity<?> create(@RequestBody InstructorInputDTO instructorInputDTO) throws Exception{
+    ResponseEntity<?> create(@RequestBody InstructorInputDTO instructorInputDTO) throws Exception {
         User ins = instructorInputDTO.toRealObj(null);
 
         ins.setInstructor(true);
 
-        try {
-            repository.save(ins);
-        } catch (RuntimeException e){
-            throw new BadInputException();
-        }
+        db.save(ins);
 
         EntityModel<?> entityModel = new InstructorOutputDTO(ins).toModel();
 

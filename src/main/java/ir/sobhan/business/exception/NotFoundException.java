@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class NotFoundException extends Exception{
+public class NotFoundException extends Exception {
     public NotFoundException(String entity, Object spec) {
-        super("there is no "+ entity +" with this Specification:" + spec);
+        super("there is no " + entity + " with this Specification:" + spec);
     }
 
     public NotFoundException(Object spec) {
@@ -17,11 +17,11 @@ public class NotFoundException extends Exception{
 }
 
 @ControllerAdvice
-class EntityNotFoundAdvice{
+class EntityNotFoundAdvice {
     @ResponseBody
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String entityNotFoundHandler(NotFoundException e){
+    String entityNotFoundHandler(NotFoundException e) {
         return e.getMessage();
     }
 }

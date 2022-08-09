@@ -1,10 +1,8 @@
 package ir.sobhan.service.course.model.entity;
 
-import ir.sobhan.service.courseSection.model.entity.CourseSection;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Getter

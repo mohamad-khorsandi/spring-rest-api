@@ -1,19 +1,16 @@
 package ir.sobhan.service.courseSection;
 
+import ir.sobhan.business.DBService.*;
 import ir.sobhan.business.exception.AccessDeniedException;
+import ir.sobhan.business.exception.BadInputException;
 import ir.sobhan.business.exception.NotFoundException;
 import ir.sobhan.business.exception.SectionIsNotEmptyException;
-import ir.sobhan.service.AbstractService.DBGetter;
 import ir.sobhan.service.course.model.entity.Course;
-import ir.sobhan.service.courseSection.dao.CourseSectionRepository;
-import ir.sobhan.service.courseSection.dao.RegistrationRepository;
 import ir.sobhan.service.courseSection.model.entity.CourseSection;
 import ir.sobhan.service.courseSection.model.entity.CourseSectionRegistration;
-import ir.sobhan.service.courseSection.model.input.CourseSectionInputDTO;
 import ir.sobhan.service.courseSection.model.output.CourseSectionOutputDTO;
 import ir.sobhan.service.courseSection.model.output.StudentOfSectionOutputDTO;
 import ir.sobhan.service.term.model.entity.Term;
-import ir.sobhan.service.user.dao.UserRepository;
 import ir.sobhan.service.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -23,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,52 +30,50 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("course-sections")
 @RequiredArgsConstructor
 public class CourseSectionController {
-    final private CourseSectionRepository repository;
-    final private RegistrationRepository registrationRepository;
-    final private UserRepository userRepository;
-    final private DBGetter get;
+    private final DBService<Term> termDB;
+    private final SectionDBService sectionDB;
+    private final DBService<Course> courseDB;
+    private final InstructorDBService instructorDB;
+    private final UserDBService userDB;
+    private final RegistrationDBService registrationDB;
+    private final StudentDBService studentDB;
 
     //LCRUD ------------------------------------------------------------------------------------------------------
     @GetMapping
-    public ResponseEntity<?> list(@RequestParam Long termId) throws NotFoundException {
-        get.termById(termId);
+    public ResponseEntity<?> list(@RequestParam Long termId, @PathParam("page-number") Integer pageNumber,
+                                  @PathParam("page-size") Integer pageSize) throws NotFoundException {
+        termDB.throwIfNotExists(termId);
 
-        List<?> list = repository.findAll().stream()
-                .filter((courseSection) -> courseSection.getTerm().getId().equals(termId))
-                .map((section -> {
-                    try {
-                        return new CourseSectionOutputDTO(section);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                })).collect(Collectors.toList());
+        List<CourseSection> sectionList = sectionDB.findAllByTerm_id(pageNumber, pageSize, termId);
 
-        CollectionModel<?> collectionModel = CollectionModel.of(list);
+        List<?> modelList = sectionList.stream().map(CourseSectionOutputDTO::new).collect(Collectors.toList());
+
+        CollectionModel<?> collectionModel = CollectionModel.of(modelList);
         return ResponseEntity.ok(collectionModel);
     }
 
     @GetMapping({"{sectionId}"})
     ResponseEntity<?> read(@PathVariable Long sectionId) throws Exception {
-        CourseSection section = get.sectionById(sectionId);
+        CourseSection section = sectionDB.getById(sectionId);
 
         EntityModel<?> userEntityModel = toOutDTOModel(section);
         return ResponseEntity.ok(userEntityModel);
     }
 
     @PostMapping
-    ResponseEntity<?> create(@RequestParam Long termId,@RequestParam Long courseId, Authentication authentication) throws Exception{
-        User instructor = get.instructorByUsername(authentication.getName());
+    ResponseEntity<?> create(@RequestParam Long termId, @RequestParam Long courseId, Authentication authentication) throws Exception {
+        User instructor = instructorDB.getByUsername(authentication.getName());
 
         CourseSection section = new CourseSection();
 
-        Term term = get.termById(termId);
-        Course course = get.courseById(courseId);
+        Term term = termDB.getById(termId);
+        Course course = courseDB.getById(courseId);
 
         section.setInstructor(instructor);
         section.setCourse(course);
         section.setTerm(term);
 
-        repository.save(section);
+        sectionDB.save(section);
 
         EntityModel<?> entityModel = toOutDTOModel(section);
         return ResponseEntity.created(linkTo(methodOn(CourseSectionController.class).read(section.getId())).toUri()).body(entityModel);
@@ -87,36 +81,37 @@ public class CourseSectionController {
 
     @PutMapping("{sectionId}")
     ResponseEntity<?> update(@PathVariable Long sectionId, @RequestParam(required = false) Long termId, @RequestParam(required = false) Long courseId, @RequestParam(required = false) Long instructorId, Authentication authentication) throws Exception {
-        CourseSection section = get.sectionById(sectionId);
-        User user = get.userByUsername(authentication.getName());
+
+        CourseSection section = sectionDB.getById(sectionId);
+        User user = userDB.getByUsername(authentication.getName());
 
         if (!user.isAdmin() && !user.getUsername().equals(section.getInstructor().getUsername()))
             throw new AccessDeniedException("only instructor of this course can do this operation");
 
-        if (termId != null){
-            Term term = get.termById(termId);
+        if (termId != null) {
+            Term term = termDB.getById(termId);
             section.setTerm(term);
         }
 
-        if (courseId != null){
-            Course course = get.courseById(courseId);
+        if (courseId != null) {
+            Course course = courseDB.getById(courseId);
             section.setCourse(course);
         }
 
-        if(instructorId != null){
-            User instructor = get.getInstructorById(instructorId);
+        if (instructorId != null) {
+            User instructor = instructorDB.getById(instructorId);
             section.setInstructor(instructor);
         }
 
-        repository.save(section);
+        sectionDB.save(section);
         EntityModel<?> entityModel = toOutDTOModel(section);
         return ResponseEntity.ok(entityModel);
     }
 
     @DeleteMapping("{sectionId}")
-    ResponseEntity<?> delete(@PathVariable Long sectionId, Authentication authentication) throws NotFoundException, AccessDeniedException, SectionIsNotEmptyException {
-        CourseSection section = get.sectionById(sectionId);
-        User user = get.userByUsername(authentication.getName());
+    ResponseEntity<?> delete(@PathVariable Long sectionId, Authentication authentication) throws AccessDeniedException, SectionIsNotEmptyException, NotFoundException {
+        CourseSection section = sectionDB.getById(sectionId);
+        User user = userDB.getByUsername(authentication.getName());
 
         if (!user.isAdmin() && !user.getUsername().equals(section.getInstructor().getUsername()))
             throw new AccessDeniedException("only instructor of this course can do this operation");
@@ -124,11 +119,11 @@ public class CourseSectionController {
         if (!section.getRegistrationList().isEmpty())
             throw new SectionIsNotEmptyException();
 
-        repository.deleteById(sectionId);
+        sectionDB.deleteById(sectionId);
         return ResponseEntity.ok().build();
     }
 
-    protected EntityModel<CourseSectionOutputDTO> toOutDTOModel(CourseSection section) throws Exception {
+    protected EntityModel<CourseSectionOutputDTO> toOutDTOModel(CourseSection section) {
         CourseSectionOutputDTO outPutDTO = new CourseSectionOutputDTO(section);
         return EntityModel.of(outPutDTO);
     }
@@ -136,7 +131,7 @@ public class CourseSectionController {
 
     @GetMapping("{sectionId}/students")
     public ResponseEntity<?> listStudents(@PathVariable Long sectionId) throws NotFoundException {
-        CourseSection section = get.sectionById(sectionId);
+        CourseSection section = sectionDB.getById(sectionId);
 
         List<?> list = section.getRegistrationList().stream()
                 .map((registration -> {
@@ -155,30 +150,26 @@ public class CourseSectionController {
 
     @PutMapping({"{sectionId}/register"})
     ResponseEntity<?> register(@PathVariable Long sectionId, Authentication authentication) throws Exception {
-        CourseSection section = get.sectionById(sectionId);
-        User stu = get.studentByUsername(authentication.getName());
+        CourseSection section = sectionDB.getById(sectionId);
+        User stu = studentDB.getByUsername(authentication.getName());
 
         CourseSectionRegistration registration = CourseSectionRegistration.builder().section(section).student(stu).build();
 
         section.getRegistrationList().add(registration);
         stu.getStudentInf().getRegistrationSet().add(registration);
-        registrationRepository.save(registration);
+        registrationDB.save(registration);
 
         EntityModel<?> entityModel = toOutDTOModel(section);
         return ResponseEntity.ok(entityModel);
     }
 
     @PutMapping("{sectionId}/{studentId}/setGrade")
-    ResponseEntity<?> setGrade(@PathVariable Long sectionId, @PathVariable Long studentId, @PathParam("grade") double grade) throws NotFoundException {
-        CourseSection section = get.sectionById(sectionId);
-
-        CourseSectionRegistration registration = section.getRegistrationList().stream()
-                .filter(registration1 -> registration1.getStudent().getId().equals(studentId))
-                .findFirst().orElseThrow(() -> new NotFoundException("student", studentId));
+    ResponseEntity<?> setGrade(@PathVariable Long sectionId, @PathVariable Long studentId, @PathParam("grade") double grade) throws NotFoundException, BadInputException {
+        CourseSectionRegistration registration = registrationDB.findBySection_IdAndStudent_Id(sectionId, studentId);
 
         registration.setScore(grade);
 
-        registrationRepository.save(registration);
+        registrationDB.save(registration);
         return ResponseEntity.ok().build();
     }
 }

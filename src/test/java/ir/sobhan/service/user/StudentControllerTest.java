@@ -1,10 +1,10 @@
 package ir.sobhan.service.user;
 
-import ir.sobhan.service.AbstractService.DBGetter;
+import ir.sobhan.business.DBService.RegistrationDBService;
+import ir.sobhan.business.DBService.StudentDBService;
 import ir.sobhan.service.courseSection.model.entity.CourseSection;
 import ir.sobhan.service.courseSection.model.entity.CourseSectionRegistration;
 import ir.sobhan.service.term.model.entity.Term;
-import ir.sobhan.service.user.dao.UserRepository;
 import ir.sobhan.service.user.model.entity.StudentInf;
 import ir.sobhan.service.user.model.entity.User;
 import ir.sobhan.service.user.model.output.TermOfStudentOutputDTO;
@@ -20,7 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @SpringBootTest
 @ContextConfiguration(classes = {StudentController.class})
@@ -29,13 +32,13 @@ class StudentControllerTest {
     StudentInf studentInf;
 
     @MockBean
-    DBGetter get;
+    StudentDBService stuDb;
 
     @MockBean
     User stu;
 
     @MockBean
-    UserRepository repository;
+    RegistrationDBService dbService;
 
     @MockBean
     Authentication authentication;
@@ -58,9 +61,9 @@ class StudentControllerTest {
 
         Mockito.when(stu.getStudentInf()).thenReturn(studentInf);
 
-        Mockito.when(get.studentByUsername(Mockito.any())).thenReturn(stu);
+        Mockito.when(stuDb.getByUsername(Mockito.any())).thenReturn(stu);
 
-        studentController.get = get;
+        studentController.db = stuDb;
 
         ResponseEntity<CollectionModel<TermOfStudentOutputDTO>> response = (ResponseEntity<CollectionModel<TermOfStudentOutputDTO>>) studentController.totalGrades(authentication);
 
@@ -78,7 +81,7 @@ class StudentControllerTest {
         });
     }
 
-    CourseSectionRegistration makeRegisteration(Term term, double grade){
+    CourseSectionRegistration makeRegisteration(Term term, double grade) {
         CourseSection section = Mockito.mock(CourseSection.class);
         Mockito.when(section.getTerm()).thenReturn(term);
 

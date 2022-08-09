@@ -1,8 +1,8 @@
 package ir.sobhan.universityrestapi;
 
 import com.jayway.jsonpath.JsonPath;
+import ir.sobhan.business.DBService.UserDBService;
 import ir.sobhan.business.exception.NotFoundException;
-import ir.sobhan.service.AbstractService.DBGetter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.ServletContext;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -43,13 +42,13 @@ class UniversityRestApiApplicationTests {
     private Integer sectionId;
     private Integer studentId;
     private Integer instructorId;
-    DBGetter dbGet;
+    UserDBService userDB;
 
     static UsernamePasswordAuthenticationToken stuAuthentication;
     static UsernamePasswordAuthenticationToken insAuthentication;
 
     @BeforeAll
-    public static void makeAuthentications(){
+    public static void makeAuthentications() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_INSTRUCTOR"));
         insAuthentication = new UsernamePasswordAuthenticationToken("ins", null, authorities);
@@ -68,11 +67,11 @@ class UniversityRestApiApplicationTests {
 
         Assertions.assertNotNull(servletContext);
         Assertions.assertTrue(servletContext instanceof MockServletContext);
-        Assertions.assertNotNull(webApplicationContext.getBean("DBGetter"));
+        Assertions.assertNotNull(webApplicationContext.getBean("userDBService"));
 
-        dbGet = (DBGetter)webApplicationContext.getBean("DBGetter");
-        studentId = Math.toIntExact(dbGet.studentByUsername("stu1").getId());
-        instructorId = Math.toIntExact(dbGet.instructorByUsername("ins").getId());
+        userDB = (UserDBService) webApplicationContext.getBean("userDBService");
+        studentId = Math.toIntExact(userDB.getByUsername("stu1").getId());
+        instructorId = Math.toIntExact(userDB.getByUsername("ins").getId());
     }
 
     @Test
@@ -85,10 +84,10 @@ class UniversityRestApiApplicationTests {
 
     public void postSection() throws Exception {
         String response = MockMvc.perform(post("/course-sections")
-                .with(authentication(insAuthentication))
-                .param("termId", String.valueOf(10))
-                .param("courseId", String.valueOf(13))
-            )
+                        .with(authentication(insAuthentication))
+                        .param("termId", String.valueOf(10))
+                        .param("courseId", String.valueOf(13))
+                )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.term.id").value(10))
                 .andExpect(jsonPath("$.course.id").value(13))
@@ -118,8 +117,8 @@ class UniversityRestApiApplicationTests {
 
     public void viewGrades() throws Exception {
         MockMvc.perform(get("/students/{studentId}/grades", studentId)
-                .with(authentication(stuAuthentication))
-                .param("termId", String.valueOf(10)))
+                        .with(authentication(stuAuthentication))
+                        .param("termId", String.valueOf(10)))
                 .andDo(print())
                 .andExpect(jsonPath("$.average").value(12.0))
                 .andExpect(jsonPath("$.sections.content[0].score").value(12.0));

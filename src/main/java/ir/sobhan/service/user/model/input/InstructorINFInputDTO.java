@@ -1,7 +1,7 @@
 package ir.sobhan.service.user.model.input;
 
-import ir.sobhan.service.user.model.entity.InstructorInf;
 import ir.sobhan.service.AbstractService.model.input.InputDTO;
+import ir.sobhan.service.user.model.entity.InstructorInf;
 import lombok.Setter;
 
 @Setter

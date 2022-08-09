@@ -1,8 +1,8 @@
-package ir.sobhan.security;
+package ir.sobhan.conf;
 
+import ir.sobhan.business.SecurityService.RoleSet;
 import ir.sobhan.business.SecurityService.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import static ir.sobhan.security.RoleSet.*;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,8 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import static ir.sobhan.business.SecurityService.RoleSet.*;
 
 @EnableWebSecurity
 @RequiredArgsConstructor

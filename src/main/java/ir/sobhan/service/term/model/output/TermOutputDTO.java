@@ -6,9 +6,10 @@ import lombok.Getter;
 
 @Getter
 public class TermOutputDTO extends OutPutDTO<Term> {
-    public TermOutputDTO(Term realObj) throws Exception {
+    public TermOutputDTO(Term realObj) {
         super(realObj);
     }
+
     public Long id;
 
     public String title;

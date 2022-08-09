@@ -1,4 +1,5 @@
 package ir.sobhan.service.user.dao;
+
 import ir.sobhan.service.user.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

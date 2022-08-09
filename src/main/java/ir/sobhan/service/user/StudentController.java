@@ -1,12 +1,13 @@
 package ir.sobhan.service.user;
 
-import ir.sobhan.business.Pair;
+import ir.sobhan.business.DBService.RegistrationDBService;
+import ir.sobhan.business.DBService.StudentDBService;
+import ir.sobhan.business.Utils.Pair;
 import ir.sobhan.business.exception.NotFoundException;
-import ir.sobhan.service.AbstractService.DBGetter;
 import ir.sobhan.service.AbstractService.LCRUD;
+import ir.sobhan.service.courseSection.model.entity.CourseSectionRegistration;
 import ir.sobhan.service.courseSection.model.output.CourseSectionRegistrationOutputDTO;
 import ir.sobhan.service.term.model.entity.Term;
-import ir.sobhan.service.user.dao.UserRepository;
 import ir.sobhan.service.user.model.entity.User;
 import ir.sobhan.service.user.model.input.StudentInputDTO;
 import ir.sobhan.service.user.model.output.StudentOutputDTO;
@@ -29,40 +30,35 @@ import java.util.stream.Collectors;
 @Slf4j
 @Setter
 public class StudentController extends LCRUD<User, StudentInputDTO> {
-    public StudentController(UserRepository repository, DBGetter get) {
-        super(repository, StudentOutputDTO.class, User::isStudent, (user -> {
+    public StudentController(StudentDBService dbService, StudentDBService db, RegistrationDBService registrationDBService) {
+        super(dbService, StudentOutputDTO.class, (user -> {
             user.setStudent(true);
             user.setActive(true);
         }));
-        this.get = get;
+        this.db = db;
+        this.registrationDBService = registrationDBService;
     }
-    DBGetter get;
+
+    StudentDBService db;
+    final RegistrationDBService registrationDBService;
 
     @GetMapping({"{studentId}/grades"})
     ResponseEntity<?> showGrades(@PathVariable Long studentId, @RequestParam(name = "termId") Long termId) throws NotFoundException {
-        User student = get.studentById(studentId);
-
         Map<String, Object> outputMap = new HashMap<>();
 
-        List<CourseSectionRegistrationOutputDTO> registrationsOfTerm = student.getStudentInf().getRegistrationSet().stream()
-                .filter(registration -> registration.getSection().getTerm().getId().equals(termId))
-                .map(registration -> {
-                    try {
-                        return new CourseSectionRegistrationOutputDTO(registration);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList());
+        List<CourseSectionRegistration> registrationList = registrationDBService.findAllBySection_Term_IdAndStudent_Id(termId, studentId);
+
+        List<CourseSectionRegistrationOutputDTO> registrationDTOList = registrationList.stream().map(CourseSectionRegistrationOutputDTO::new).collect(Collectors.toList());
 
         double sum = 0;
-        for (CourseSectionRegistrationOutputDTO registration : registrationsOfTerm){
+        for (CourseSectionRegistrationOutputDTO registration : registrationDTOList) {
             sum += registration.getScore();
         }
-        double total = registrationsOfTerm.size();
+
+        double total = registrationDTOList.size();
         double ave = sum / total;
 
-        CollectionModel<CourseSectionRegistrationOutputDTO> collectionModel = CollectionModel.of(registrationsOfTerm);
+        CollectionModel<CourseSectionRegistrationOutputDTO> collectionModel = CollectionModel.of(registrationDTOList);
 
         outputMap.put("average", ave);
         outputMap.put("sections", collectionModel);
@@ -72,19 +68,20 @@ public class StudentController extends LCRUD<User, StudentInputDTO> {
 
     @GetMapping({"total-grades"})
     ResponseEntity<?> totalGrades(Authentication authentication) throws NotFoundException {
-        User stu = get.studentByUsername(authentication.getName());
+        User stu = db.getByUsername(authentication.getName());
 
         Map<Term, Pair<Double, Integer>> aveMap = new HashMap<>();
+
         stu.getStudentInf().getRegistrationSet()
                 .forEach(registration -> {
-                        Term term = registration.getSection().getTerm();
-                        Pair<Double, Integer> lastPair;
-                        if (aveMap.get(term) != null) {
-                            lastPair = aveMap.get(term);
-                            aveMap.put(term, new Pair<>(lastPair.getKey() + registration.getScore(), lastPair.getVal() + 1));
-                        }else {
-                            aveMap.put(term, new Pair<>(registration.getScore(), 1));
-                        }
+                    Term term = registration.getSection().getTerm();
+                    Pair<Double, Integer> lastPair;
+                    if (aveMap.get(term) != null) {
+                        lastPair = aveMap.get(term);
+                        aveMap.put(term, new Pair<>(lastPair.getKey() + registration.getScore(), lastPair.getVal() + 1));
+                    } else {
+                        aveMap.put(term, new Pair<>(registration.getScore(), 1));
+                    }
                 });
 
         List<TermOfStudentOutputDTO> termList = new ArrayList<>();
