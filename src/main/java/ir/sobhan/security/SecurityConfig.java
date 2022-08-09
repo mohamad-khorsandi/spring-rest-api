@@ -1,24 +1,17 @@
 package ir.sobhan.security;
 
+import ir.sobhan.business.SecurityService.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-
-import static ir.sobhan.security.Role.*;
-import static ir.sobhan.security.SecurityConfig.RoleSet.*;
-import static org.springframework.http.HttpMethod.*;
-
-import org.springframework.http.HttpMethod;
+import static ir.sobhan.security.RoleSet.*;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -26,6 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     final private UserDetailsService userDetailsService;
     final private PasswordEncoder passwordEncoder;
+    final private SecurityUtils utils;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -43,48 +37,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         accessMap.put("/admin/active-user", A);
 
         http.csrf().disable();
-        setAuthorities(http, accessMap);
-        setAuthorities(http, "/students/**", A, SIA, A, A);
-        setAuthorities(http, "/instructors/**", A, SIA, A, A);
-        setAuthorities(http, "/terms/**", A, SIA, A, A);
-        setAuthorities(http, "/courses/**", A, SIA, A, A);
-        setAuthorities(http, "/course-sections/**", I, SIA, IA, IA);
+        http.authorizeRequests().antMatchers("/signin/**").permitAll();
+        utils.setAuthorities(http, accessMap);
+        utils.setAuthorities(http, "/students/**", A, SIA, A, A);
+        utils.setAuthorities(http, "/instructors/**", A, SIA, A, A);
+        utils.setAuthorities(http, "/terms/**", A, SIA, A, A);
+        utils.setAuthorities(http, "/courses/**", A, SIA, A, A);
+        utils.setAuthorities(http, "/course-sections/**", I, SIA, IA, IA);
         http.authorizeRequests().anyRequest().authenticated();
         http.formLogin();
-    }
-
-    static HttpMethod[] CRUDMethods = {POST, GET, PUT, DELETE};
-
-    void setAuthorities(HttpSecurity http, String endPoint, RoleSet C, RoleSet R, RoleSet U, RoleSet D) throws Exception {
-        RoleSet[] roleSets = {C, R, U, D};
-        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry lastConfig = http.authorizeRequests();
-        for (int i = 0; i < 4; i++) {
-            HttpMethod method = CRUDMethods[i];
-            String[] strRoles = roleSets[i].roles;
-            lastConfig = lastConfig.antMatchers(method, endPoint).hasAnyRole(strRoles);
-        }
-    }
-
-    void setAuthorities(HttpSecurity http, Map<String, RoleSet> accessMap) throws Exception {
-        AtomicReference<ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry> lastConfig = new AtomicReference<>(http.authorizeRequests());
-
-        accessMap.forEach((endpoint, roleSet) -> {
-                lastConfig.set(lastConfig.get().antMatchers(endpoint).hasAnyRole(roleSet.roles));
-            }
-        );
-    }
-
-    enum RoleSet{
-        SA(STUDENT, ADMIN), IA(INSTRUCTOR, ADMIN), SIA(STUDENT, INSTRUCTOR, ADMIN), I(INSTRUCTOR), A(ADMIN), S(STUDENT);
-
-        final String[] roles;
-
-        RoleSet(Role ... roleEnums) {
-            roles = new String[roleEnums.length];
-
-            for (int i = 0; i < roleEnums.length; i++) {
-                this.roles[i] = roleEnums[i].getStr();
-            }
-        }
     }
 }

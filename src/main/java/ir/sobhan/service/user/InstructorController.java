@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("instructors")
 public class InstructorController extends LCRUD<User, InstructorInputDTO> {
     public InstructorController(UserRepository repository) {
-        super(repository, InstructorOutputDTO.class, User::isInstructor, (user -> user.setInstructor(true)));
+        super(repository, InstructorOutputDTO.class, User::isInstructor, (user -> {
+            user.setInstructor(true);
+            user.setActive(true);
+        }));
     }
 }

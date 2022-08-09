@@ -30,7 +30,10 @@ import java.util.stream.Collectors;
 @Setter
 public class StudentController extends LCRUD<User, StudentInputDTO> {
     public StudentController(UserRepository repository, DBGetter get) {
-        super(repository, StudentOutputDTO.class, User::isStudent, (user -> user.setStudent(true)));
+        super(repository, StudentOutputDTO.class, User::isStudent, (user -> {
+            user.setStudent(true);
+            user.setActive(true);
+        }));
         this.get = get;
     }
     DBGetter get;

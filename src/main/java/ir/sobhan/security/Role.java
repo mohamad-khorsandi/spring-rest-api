@@ -12,7 +12,7 @@ public enum Role {
 
     private final String ROLE_str;
 
-    String getStr(){
+    public String getStr(){
         return this.toString();
     }
 }

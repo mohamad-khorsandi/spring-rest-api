@@ -1,4 +1,4 @@
-package ir.sobhan.security;
+package ir.sobhan.business.SecurityService;
 
 import ir.sobhan.service.user.dao.UserRepository;
 import ir.sobhan.service.user.model.entity.User;
