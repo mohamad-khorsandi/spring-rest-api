@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class TermOfStudentOutputDTO extends OutPutDTO<Term> {
-    public TermOfStudentOutputDTO(Term realObj, double sum, double count) throws Exception {
+    public TermOfStudentOutputDTO(Term realObj, double sum, double count) {
         super(realObj);
 
         this.ave = sum / count;

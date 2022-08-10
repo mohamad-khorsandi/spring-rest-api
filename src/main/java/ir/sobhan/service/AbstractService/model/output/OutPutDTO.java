@@ -38,5 +38,4 @@ abstract public class OutPutDTO<R_CLASS> {
     public EntityModel<? extends OutPutDTO> toModel() {
         return EntityModel.of(this.getClass().cast(this));
     }
-
 }

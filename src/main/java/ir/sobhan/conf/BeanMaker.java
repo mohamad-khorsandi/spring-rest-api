@@ -49,5 +49,4 @@ public class BeanMaker {
     DBService<Course> courseDBService() {
         return new DBService<>(courseRepository);
     }
-
 }

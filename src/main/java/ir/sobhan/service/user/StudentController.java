@@ -43,7 +43,7 @@ public class StudentController extends LCRUD<User, StudentInputDTO> {
     final RegistrationDBService registrationDBService;
 
     @GetMapping({"{studentId}/grades"})
-    ResponseEntity<?> showGrades(@PathVariable Long studentId, @RequestParam(name = "termId") Long termId) throws NotFoundException {
+    ResponseEntity<?> showGrades(@PathVariable Long studentId, @RequestParam(name = "termId") Long termId) {
         Map<String, Object> outputMap = new HashMap<>();
 
         List<CourseSectionRegistration> registrationList = registrationDBService.findAllBySection_Term_IdAndStudent_Id(termId, studentId);
@@ -51,9 +51,8 @@ public class StudentController extends LCRUD<User, StudentInputDTO> {
         List<CourseSectionRegistrationOutputDTO> registrationDTOList = registrationList.stream().map(CourseSectionRegistrationOutputDTO::new).collect(Collectors.toList());
 
         double sum = 0;
-        for (CourseSectionRegistrationOutputDTO registration : registrationDTOList) {
+        for (CourseSectionRegistrationOutputDTO registration : registrationDTOList)
             sum += registration.getScore();
-        }
 
         double total = registrationDTOList.size();
         double ave = sum / total;
@@ -70,8 +69,19 @@ public class StudentController extends LCRUD<User, StudentInputDTO> {
     ResponseEntity<?> totalGrades(Authentication authentication) throws NotFoundException {
         User stu = db.getByUsername(authentication.getName());
 
-        Map<Term, Pair<Double, Integer>> aveMap = new HashMap<>();
+        Map<Term, Pair<Double, Integer>> aveMap = fillAveMap(stu);
 
+        List<TermOfStudentOutputDTO> termList = new ArrayList<>();
+
+        aveMap.forEach((term, pair) -> termList.add(new TermOfStudentOutputDTO(term, pair.getKey(), pair.getVal())));
+
+        CollectionModel<TermOfStudentOutputDTO> collectionModel = CollectionModel.of(termList);
+
+        return ResponseEntity.ok(collectionModel);
+    }
+
+    Map<Term, Pair<Double, Integer>> fillAveMap(User stu) {
+        Map<Term, Pair<Double, Integer>> aveMap = new HashMap<>();
         stu.getStudentInf().getRegistrationSet()
                 .forEach(registration -> {
                     Term term = registration.getSection().getTerm();
@@ -83,19 +93,6 @@ public class StudentController extends LCRUD<User, StudentInputDTO> {
                         aveMap.put(term, new Pair<>(registration.getScore(), 1));
                     }
                 });
-
-        List<TermOfStudentOutputDTO> termList = new ArrayList<>();
-
-        aveMap.forEach((term, pair) -> {
-            try {
-                termList.add(new TermOfStudentOutputDTO(term, pair.getKey(), pair.getVal()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        CollectionModel<TermOfStudentOutputDTO> collectionModel = CollectionModel.of(termList);
-
-        return ResponseEntity.ok(collectionModel);
+        return aveMap;
     }
 }

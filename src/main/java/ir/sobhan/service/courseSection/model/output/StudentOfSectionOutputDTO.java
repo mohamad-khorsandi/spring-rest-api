@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class StudentOfSectionOutputDTO extends OutPutDTO<User> {
-    public StudentOfSectionOutputDTO(User realObj, Double score) throws Exception {
+    public StudentOfSectionOutputDTO(User realObj, Double score) {
         super(realObj);
         this.grade = score;
     }

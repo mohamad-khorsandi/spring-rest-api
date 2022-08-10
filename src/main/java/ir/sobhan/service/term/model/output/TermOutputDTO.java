@@ -11,7 +11,6 @@ public class TermOutputDTO extends OutPutDTO<Term> {
     }
 
     public Long id;
-
     public String title;
     public Boolean open;
 }

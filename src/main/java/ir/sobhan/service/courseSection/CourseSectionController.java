@@ -137,11 +137,7 @@ public class CourseSectionController {
                 .map((registration -> {
                     User student = registration.getStudent();
                     Double score = registration.getScore();
-                    try {
-                        return new StudentOfSectionOutputDTO(student, score);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                    return new StudentOfSectionOutputDTO(student, score);
                 })).collect(Collectors.toList());
 
         CollectionModel<?> collectionModel = CollectionModel.of(list);

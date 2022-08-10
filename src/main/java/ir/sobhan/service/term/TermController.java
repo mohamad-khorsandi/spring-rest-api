@@ -14,5 +14,4 @@ public class TermController extends LCRUD<Term, TermInputDTO> {
     public TermController(DBService<Term> dbService) {
         super(dbService, TermOutputDTO.class);
     }
-
 }
