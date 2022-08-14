@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDBService extends DBService<User> {
+    final private UserRepository userRepository;
+
     public UserDBService(UserRepository userRepository) {
         super(userRepository);
         this.userRepository = userRepository;
     }
-
-    final private UserRepository userRepository;
 
     public User getByUsername(String username) throws NotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("user", username));

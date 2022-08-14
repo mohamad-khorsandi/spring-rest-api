@@ -3,6 +3,7 @@ package ir.sobhan.universityrestapi;
 import com.jayway.jsonpath.JsonPath;
 import ir.sobhan.business.DBService.UserDBService;
 import ir.sobhan.business.exception.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @WebAppConfiguration
+@RequiredArgsConstructor
 @Slf4j
 class UniversityRestApiApplicationTests {
 
@@ -42,7 +44,6 @@ class UniversityRestApiApplicationTests {
     private Integer sectionId;
     private Integer studentId;
     private Integer instructorId;
-    UserDBService userDB;
 
     static UsernamePasswordAuthenticationToken stuAuthentication;
     static UsernamePasswordAuthenticationToken insAuthentication;
@@ -56,8 +57,8 @@ class UniversityRestApiApplicationTests {
         Collection<GrantedAuthority> authorities2 = new ArrayList<>();
         authorities2.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
         stuAuthentication = new UsernamePasswordAuthenticationToken("stu1", null, authorities2);
-
     }
+
 
     @BeforeEach
     public void makeBeansOfApplication() throws NotFoundException {
@@ -69,7 +70,7 @@ class UniversityRestApiApplicationTests {
         Assertions.assertTrue(servletContext instanceof MockServletContext);
         Assertions.assertNotNull(webApplicationContext.getBean("userDBService"));
 
-        userDB = (UserDBService) webApplicationContext.getBean("userDBService");
+        UserDBService userDB = (UserDBService) webApplicationContext.getBean("userDBService");
         studentId = Math.toIntExact(userDB.getByUsername("stu1").getId());
         instructorId = Math.toIntExact(userDB.getByUsername("ins").getId());
     }
