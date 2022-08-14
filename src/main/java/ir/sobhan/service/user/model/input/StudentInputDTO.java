@@ -6,10 +6,6 @@ import lombok.Setter;
 
 @Setter
 public class StudentInputDTO extends InputDTO<User> {
-    public StudentInputDTO() {
-        super(User.class);
-    }
-
     public StudentINFInputDTO studentInf;
     public String username;
     public String password;
@@ -17,4 +13,7 @@ public class StudentInputDTO extends InputDTO<User> {
     public String phone;
     public String nationalId;
 
+    public StudentInputDTO() {
+        super(User.class);
+    }
 }

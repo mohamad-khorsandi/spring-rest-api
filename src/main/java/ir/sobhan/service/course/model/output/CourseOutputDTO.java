@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 public class CourseOutputDTO extends OutPutDTO<Course> {
-    public CourseOutputDTO(Course realObj) {
-        super(realObj);
-    }
-
     public Long id;
     public String title;
     public Integer units;
+
+    public CourseOutputDTO(Course realObj) {
+        super(realObj);
+    }
 }

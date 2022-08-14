@@ -6,14 +6,14 @@ import lombok.Setter;
 
 @Setter
 public class InstructorInputDTO extends InputDTO<User> {
-    public InstructorInputDTO() {
-        super(User.class);
-    }
-
     public InstructorINFInputDTO instructorInf;
     public String username;
     public String password;
     public String name;
     public String phone;
     public String nationalId;
+
+    public InstructorInputDTO() {
+        super(User.class);
+    }
 }

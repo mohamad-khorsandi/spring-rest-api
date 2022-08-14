@@ -17,7 +17,6 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(indexes = @Index(columnList = "id", unique = true))
 public class CourseSection {
     @Id
     @GeneratedValue
@@ -25,7 +24,6 @@ public class CourseSection {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Term term;
 
@@ -33,12 +31,10 @@ public class CourseSection {
     private Set<CourseSectionRegistration> registrationList;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Course course;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User instructor;
 }

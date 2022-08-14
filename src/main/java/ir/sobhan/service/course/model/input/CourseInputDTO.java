@@ -6,10 +6,10 @@ import lombok.Setter;
 
 @Setter
 public class CourseInputDTO extends InputDTO<Course> {
+    public String title;
+    public Integer units;
+
     public CourseInputDTO() {
         super(Course.class);
     }
-
-    public String title;
-    public Integer units;
 }

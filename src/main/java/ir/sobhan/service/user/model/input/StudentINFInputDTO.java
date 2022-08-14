@@ -6,10 +6,10 @@ import lombok.Setter;
 
 @Setter
 public class StudentINFInputDTO extends InputDTO<StudentInf> {
+    public String studentId;
+    public StudentInf.Degree degree;
+
     public StudentINFInputDTO() {
         super(StudentInf.class);
     }
-
-    public String studentId;
-    public StudentInf.Degree degree;
 }

@@ -24,17 +24,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Setter
 @RequiredArgsConstructor
 abstract public class LCRUD<ENTITY, INPUT_DTO extends InputDTO<ENTITY>> {
-    public LCRUD(DBService<ENTITY> dbService, Class<? extends OutPutDTO<ENTITY>> outDTOClass, Consumer<ENTITY> postInitializer) {
-        this.dbService = dbService;
-        this.outDTOClass = outDTOClass;
-        this.postInitializer = postInitializer;
-    }
 
     final protected DBService<ENTITY> dbService;
     final protected Class<? extends OutPutDTO<ENTITY>> outDTOClass;
     protected Consumer<ENTITY> postInitializer = entity -> {
     };
     String idFieldName = "id";
+
+    public LCRUD(DBService<ENTITY> dbService, Class<? extends OutPutDTO<ENTITY>> outDTOClass, Consumer<ENTITY> postInitializer) {
+        this.dbService = dbService;
+        this.outDTOClass = outDTOClass;
+        this.postInitializer = postInitializer;
+    }
 
     @GetMapping
     public ResponseEntity<?> list(@PathParam("page-number") Integer pageNumber,

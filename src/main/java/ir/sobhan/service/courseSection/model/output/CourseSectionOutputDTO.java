@@ -8,15 +8,15 @@ import lombok.Getter;
 
 @Getter
 public class CourseSectionOutputDTO extends OutPutDTO<CourseSection> {
-    public CourseSectionOutputDTO(CourseSection realObj) {
-        super(realObj);
-        if (realObj.getRegistrationList() != null)
-            studentCount = realObj.getRegistrationList().size();
-    }
-
     public Long id;
     private Integer studentCount;
     public TermOutputDTO term;
     public Course course;
     public LightInstructorOutputDTO instructor;
+
+    public CourseSectionOutputDTO(CourseSection realObj) {
+        super(realObj);
+        if (realObj.getRegistrationList() != null)
+            studentCount = realObj.getRegistrationList().size();
+    }
 }

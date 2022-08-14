@@ -6,10 +6,10 @@ import lombok.Setter;
 
 @Setter
 public class TermInputDTO extends InputDTO<Term> {
+    public String title;
+    public Boolean open;
+
     public TermInputDTO() {
         super(Term.class);
     }
-
-    public String title;
-    public Boolean open;
 }

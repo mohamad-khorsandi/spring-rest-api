@@ -8,11 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Slf4j
 public class CourseSectionRegistrationOutputDTO extends OutPutDTO<CourseSectionRegistration> {
+    public Double score;
+    private final String title;
+
     public CourseSectionRegistrationOutputDTO(CourseSectionRegistration realObj) {
         super(realObj);
         this.title = realObj.getSection().getCourse().getTitle();
     }
-
-    public Double score;
-    private final String title;
 }

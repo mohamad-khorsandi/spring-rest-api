@@ -10,11 +10,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user_tlb", indexes = {
-        @Index(columnList = "id", unique = true),
-        @Index(columnList = "username", unique = true)
-})
-
+@Table(name = "user_tlb", indexes = @Index(columnList = "username", unique = true))
 public class User {
     @Id
     @GeneratedValue

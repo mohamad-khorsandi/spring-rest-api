@@ -1,6 +1,7 @@
 package ir.sobhan.service.AbstractService.model.input;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 abstract public class InputDTO<R_CLASS> {
     public InputDTO(Class<R_CLASS> type) {
@@ -17,13 +18,18 @@ abstract public class InputDTO<R_CLASS> {
         if (realObj == null)
             realObj = realClassType.getConstructor().newInstance();
 
-        Field[] inputFields = this.getClass().getFields();
+        R_CLASS finalRealObj = realObj;
 
-        for (Field inputField : inputFields) {
+        Arrays.stream(this.getClass().getFields()).forEach(inputField -> setField(finalRealObj, inputField));
+
+        return realObj;
+    }
+
+    void setField(R_CLASS realObj, Field inputField) {
+        try {
             Object inputValue = inputField.get(this);
 
-            if (inputValue == null)
-                continue;
+            if (inputValue == null) return;
 
             Field realField = realObj.getClass().getDeclaredField(inputField.getName());
             realField.setAccessible(true);
@@ -32,11 +38,12 @@ abstract public class InputDTO<R_CLASS> {
                 InputDTO DTOInputValue = (InputDTO) inputValue;
                 Object realInputValue = DTOInputValue.toRealObj(realField.get(realObj));
                 realField.set(realObj, realInputValue);
-                continue;
+                return;
             }
-
             realField.set(realObj, inputValue);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return realObj;
     }
+
 }

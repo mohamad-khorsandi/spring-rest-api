@@ -6,9 +6,9 @@ import lombok.Setter;
 
 @Setter
 public class InstructorINFInputDTO extends InputDTO<InstructorInf> {
+    public InstructorInf.Rank rank;
+
     public InstructorINFInputDTO() {
         super(InstructorInf.class);
     }
-
-    public InstructorInf.Rank rank;
 }

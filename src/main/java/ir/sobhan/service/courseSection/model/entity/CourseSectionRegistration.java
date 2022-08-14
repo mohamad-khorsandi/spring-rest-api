@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(indexes = @Index(columnList = "id", unique = true))
 public class CourseSectionRegistration {
     @Id
     @GeneratedValue
@@ -23,12 +22,10 @@ public class CourseSectionRegistration {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     User student;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn
     CourseSection section;
 
     double score;

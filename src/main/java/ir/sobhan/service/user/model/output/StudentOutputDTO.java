@@ -6,10 +6,6 @@ import lombok.Getter;
 
 @Getter
 public class StudentOutputDTO extends OutPutDTO<User> {
-    public StudentOutputDTO(User realObj) {
-        super(realObj);
-    }
-
     public Long id;
     public String username;
     public StudentINFOutputDTO studentInf;
@@ -18,4 +14,8 @@ public class StudentOutputDTO extends OutPutDTO<User> {
     public String nationalId;
     public Boolean active;
     public Boolean admin;
+
+    public StudentOutputDTO(User realObj) {
+        super(realObj);
+    }
 }

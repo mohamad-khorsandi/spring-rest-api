@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 public class TermOutputDTO extends OutPutDTO<Term> {
-    public TermOutputDTO(Term realObj) {
-        super(realObj);
-    }
-
     public Long id;
     public String title;
     public Boolean open;
+
+    public TermOutputDTO(Term realObj) {
+        super(realObj);
+    }
 }

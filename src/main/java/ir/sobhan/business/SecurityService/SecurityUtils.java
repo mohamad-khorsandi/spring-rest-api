@@ -17,9 +17,10 @@ public class SecurityUtils {
     public void setAuthorities(HttpSecurity http, String endPoint, RoleSet C, RoleSet R, RoleSet U, RoleSet D) throws Exception {
         RoleSet[] roleSets = {C, R, U, D};
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry lastConfig = http.authorizeRequests();
-        for (int i = 0; i < 4; i++) {
-            HttpMethod method = CRUDMethods[i];
-            String[] strRoles = roleSets[i].getRoles();
+
+        int i = 0;
+        for (HttpMethod method : CRUDMethods) {
+            String[] strRoles = roleSets[i++].getRoles();
             lastConfig = lastConfig.antMatchers(method, endPoint).hasAnyRole(strRoles);
         }
     }
@@ -30,6 +31,4 @@ public class SecurityUtils {
         accessMap.forEach((endpoint, roleSet) -> lastConfig.set(lastConfig.get().antMatchers(endpoint).hasAnyRole(roleSet.getRoles()))
         );
     }
-
-
 }

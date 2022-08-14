@@ -2,14 +2,14 @@ package ir.sobhan.business.DBService;
 
 import ir.sobhan.business.exception.BadInputException;
 import ir.sobhan.business.exception.NotFoundException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DBService<ENTITY> {
     final protected JpaRepository<ENTITY, Long> repository;
 

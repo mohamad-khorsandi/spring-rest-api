@@ -7,13 +7,13 @@ import lombok.Getter;
 
 @Getter
 public class StudentOfSectionOutputDTO extends OutPutDTO<User> {
-    public StudentOfSectionOutputDTO(User realObj, Double score) {
-        super(realObj);
-        this.grade = score;
-    }
-
     public Long id;
     public String name;
     public StudentINFOutputDTO studentInf;
     private final Double grade;
+
+    public StudentOfSectionOutputDTO(User realObj, Double score) {
+        super(realObj);
+        this.grade = score;
+    }
 }

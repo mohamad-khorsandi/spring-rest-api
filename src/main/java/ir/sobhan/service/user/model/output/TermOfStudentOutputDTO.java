@@ -8,13 +8,12 @@ import lombok.ToString;
 @Getter
 @ToString
 public class TermOfStudentOutputDTO extends OutPutDTO<Term> {
-    public TermOfStudentOutputDTO(Term realObj, double sum, double count) {
-        super(realObj);
-
-        this.ave = sum / count;
-    }
-
     public Long id;
     public String title;
     private Double ave;
+
+    public TermOfStudentOutputDTO(Term realObj, double sum, double count) {
+        super(realObj);
+        this.ave = sum / count;
+    }
 }

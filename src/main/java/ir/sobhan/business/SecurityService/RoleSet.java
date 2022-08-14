@@ -2,6 +2,9 @@ package ir.sobhan.business.SecurityService;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.function.IntFunction;
+
 import static ir.sobhan.business.SecurityService.Role.*;
 
 @Getter
@@ -11,10 +14,6 @@ public enum RoleSet {
     private final String[] roles;
 
     RoleSet(Role... roleEnums) {
-        roles = new String[roleEnums.length];
-
-        for (int i = 0; i < roleEnums.length; i++) {
-            this.roles[i] = roleEnums[i].getStr();
-        }
+        roles = Arrays.stream(roleEnums).map(Role::getStr).toArray(String[]::new);
     }
 }

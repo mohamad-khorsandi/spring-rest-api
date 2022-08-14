@@ -2,7 +2,10 @@ package ir.sobhan.service.term.model.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
 @Getter
@@ -10,7 +13,6 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(indexes = @Index(columnList = "id", unique = true))
 public class Term {
     @Id
     @GeneratedValue

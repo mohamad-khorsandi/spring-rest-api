@@ -38,7 +38,6 @@ public class CourseSectionController {
     private final RegistrationDBService registrationDB;
     private final StudentDBService studentDB;
 
-    //LCRUD ------------------------------------------------------------------------------------------------------
     @GetMapping
     public ResponseEntity<?> list(@RequestParam Long termId, @PathParam("page-number") Integer pageNumber,
                                   @PathParam("page-size") Integer pageSize) throws NotFoundException {
@@ -127,7 +126,6 @@ public class CourseSectionController {
         CourseSectionOutputDTO outPutDTO = new CourseSectionOutputDTO(section);
         return EntityModel.of(outPutDTO);
     }
-    //CRUD END ------------------------------------------------------------------------------------------------------
 
     @GetMapping("{sectionId}/students")
     public ResponseEntity<?> listStudents(@PathVariable Long sectionId) throws NotFoundException {
