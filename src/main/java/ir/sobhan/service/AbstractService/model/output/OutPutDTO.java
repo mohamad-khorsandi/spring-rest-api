@@ -1,5 +1,6 @@
 package ir.sobhan.service.AbstractService.model.output;
 
+import ir.sobhan.business.exception.CanNotConvertDTOException;
 import org.springframework.hateoas.EntityModel;
 
 import java.lang.reflect.Constructor;
@@ -12,7 +13,7 @@ abstract public class OutPutDTO<R_CLASS> {
             try {
                 setField(realObj, outFiled);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new CanNotConvertDTOException(e);
             }
         });
     }

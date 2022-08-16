@@ -1,5 +1,7 @@
 package ir.sobhan.service.AbstractService.model.input;
 
+import ir.sobhan.business.exception.CanNotConvertDTOException;
+
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
@@ -42,7 +44,7 @@ abstract public class InputDTO<R_CLASS> {
             }
             realField.set(realObj, inputValue);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CanNotConvertDTOException(e);
         }
     }
 

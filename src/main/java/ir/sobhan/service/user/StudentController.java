@@ -50,10 +50,7 @@ public class StudentController extends LCRUD<User, StudentInputDTO> {
 
         List<CourseSectionRegistrationOutputDTO> registrationDTOList = registrationList.stream().map(CourseSectionRegistrationOutputDTO::new).collect(Collectors.toList());
 
-        double sum = registrationList.stream().mapToDouble(CourseSectionRegistration::getScore).sum();
-
-        double total = registrationDTOList.size();
-        double ave = sum / total;
+        double ave = registrationList.stream().mapToDouble(CourseSectionRegistration::getScore).average().orElse(0);
 
         CollectionModel<CourseSectionRegistrationOutputDTO> collectionModel = CollectionModel.of(registrationDTOList);
 
@@ -80,11 +77,9 @@ public class StudentController extends LCRUD<User, StudentInputDTO> {
 
     Map<Term, Double> fillAveMap(User stu) {
 
-        Map<Term, Double> aveMap = stu.getStudentInf().getRegistrationSet().stream()
+        return stu.getStudentInf().getRegistrationSet().stream()
                 .collect(Collectors.groupingBy(registration -> registration.getSection().getTerm()))
                 .entrySet().stream().map(termListEntry -> Pair.of(termListEntry.getKey(), termListEntry.getValue().stream().mapToDouble(CourseSectionRegistration::getScore).average().orElse(0)))
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
-
-        return aveMap;
     }
 }
