@@ -8,6 +8,7 @@ import ir.sobhan.service.term.model.entity.Term;
 import ir.sobhan.service.user.dao.UserRepository;
 import ir.sobhan.service.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
 import javax.annotation.PostConstruct;
@@ -19,9 +20,15 @@ public class Configuration {
     final private CourseRepository courseRepository;
     final private UserRepository userRepository;
 
+    @Value("${adminUsername}")
+    String adminUsername;
+
+    @Value("${adminPass}")
+    String adminPass;
+
     @PostConstruct
     void MakeAdmin() {
-        User admin = User.builder().username("adm").password("pass").name("mmd").phone("0913").nationalId("127").build();
+        User admin = User.builder().username(adminUsername).password(adminPass).name("mmd").phone("0913").nationalId("127").build();
 
         admin.setAdmin(true);
         admin.setActive(true);

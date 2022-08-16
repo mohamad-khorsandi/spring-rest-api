@@ -13,7 +13,6 @@ import ir.sobhan.service.user.model.output.StudentOutputDTO;
 import ir.sobhan.service.user.model.output.TermOfStudentOutputDTO;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
@@ -68,31 +67,24 @@ public class StudentController extends LCRUD<User, StudentInputDTO> {
     ResponseEntity<?> totalGrades(Authentication authentication) throws NotFoundException {
         User stu = db.getByUsername(authentication.getName());
 
-        Map<Term, Pair<Double, Integer>> aveMap = fillAveMap(stu);
+        Map<Term, Double> aveMap = fillAveMap(stu);
 
         List<TermOfStudentOutputDTO> termList = new ArrayList<>();
 
-        aveMap.forEach((term, pair) -> termList.add(new TermOfStudentOutputDTO(term, pair.getKey(), pair.getValue())));
+        aveMap.forEach((term, ave) -> termList.add(new TermOfStudentOutputDTO(term, ave)));
 
         CollectionModel<TermOfStudentOutputDTO> collectionModel = CollectionModel.of(termList);
 
         return ResponseEntity.ok(collectionModel);
     }
 
-    Map<Term, Pair<Double, Integer>> fillAveMap(User stu) {
-        Map<Term, Pair<Double, Integer>> aveMap = new HashMap<>();
+    Map<Term, Double> fillAveMap(User stu) {
 
-        stu.getStudentInf().getRegistrationSet()
-                .forEach(registration -> {
-                    Term term = registration.getSection().getTerm();
-                    Pair<Double, Integer> lastPair;
-                    if (aveMap.get(term) != null) {
-                        lastPair = aveMap.get(term);
-                        aveMap.put(term, new MutablePair<>(lastPair.getKey() + registration.getScore(), lastPair.getValue() + 1));
-                    } else {
-                        aveMap.put(term, new MutablePair<>(registration.getScore(), 1));
-                    }
-                });
+        Map<Term, Double> aveMap = stu.getStudentInf().getRegistrationSet().stream()
+                .collect(Collectors.groupingBy(registration -> registration.getSection().getTerm()))
+                .entrySet().stream().map(termListEntry -> Pair.of(termListEntry.getKey(), termListEntry.getValue().stream().mapToDouble(CourseSectionRegistration::getScore).average().orElse(0)))
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+
         return aveMap;
     }
 }

@@ -12,8 +12,8 @@ public class TermOfStudentOutputDTO extends OutPutDTO<Term> {
     public String title;
     private Double ave;
 
-    public TermOfStudentOutputDTO(Term realObj, double sum, double count) {
+    public TermOfStudentOutputDTO(Term realObj, double ave) {
         super(realObj);
-        this.ave = sum / count;
+        this.ave = ave;
     }
 }
