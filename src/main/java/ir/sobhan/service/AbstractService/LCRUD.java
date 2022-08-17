@@ -1,6 +1,7 @@
 package ir.sobhan.service.AbstractService;
 
 import ir.sobhan.business.DBService.DBService;
+import ir.sobhan.business.exception.CanNotConvertDTOException;
 import ir.sobhan.business.exception.NotFoundException;
 import ir.sobhan.service.AbstractService.model.input.InputDTO;
 import ir.sobhan.service.AbstractService.model.output.OutPutDTO;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.websocket.server.PathParam;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -97,8 +99,9 @@ abstract public class LCRUD<ENTITY, INPUT_DTO extends InputDTO<ENTITY>> {
             Constructor constructor = outDTOClass.getConstructor(entity.getClass());
             OutPutDTO<ENTITY> outPutDTO = (OutPutDTO) constructor.newInstance(entity);
             return (EntityModel<? extends OutPutDTO<ENTITY>>) outPutDTO.toModel();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new CanNotConvertDTOException(e);
         }
     }
 }

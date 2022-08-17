@@ -3,6 +3,7 @@ package ir.sobhan.service.AbstractService.model.input;
 import ir.sobhan.business.exception.CanNotConvertDTOException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 abstract public class InputDTO<R_CLASS> {
@@ -16,14 +17,18 @@ abstract public class InputDTO<R_CLASS> {
      * @param realObj null -> to make new instance and init with dto
      *                obj ->  to change given instance fields with not null fields of dto
      */
-    public R_CLASS toRealObj(R_CLASS realObj) throws Exception {
-        if (realObj == null)
-            realObj = realClassType.getConstructor().newInstance();
+    public R_CLASS toRealObj(R_CLASS realObj) {
 
-        R_CLASS finalRealObj = realObj;
+        try {
+            if (realObj == null) realObj = realClassType.getConstructor().newInstance();
 
-        Arrays.stream(this.getClass().getFields()).forEach(inputField -> setField(finalRealObj, inputField));
+            R_CLASS finalRealObj = realObj;
+            Arrays.stream(this.getClass().getFields()).forEach(inputField -> setField(finalRealObj, inputField));
 
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+                 NoSuchMethodException e) {
+            throw new CanNotConvertDTOException(e);
+        }
         return realObj;
     }
 
@@ -43,7 +48,7 @@ abstract public class InputDTO<R_CLASS> {
                 return;
             }
             realField.set(realObj, inputValue);
-        } catch (Exception e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new CanNotConvertDTOException(e);
         }
     }
